@@ -1,0 +1,2 @@
+# copied from A3D3's setup https://github.com/katyagovorkova/HDRchallenge/blob/main/ingestion_program/metadata.yaml 
+command: python3 /app/program/ingestion.py /app/input_data/ /app/output/ /app/program /app/ingested_program
