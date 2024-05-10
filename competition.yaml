@@ -19,6 +19,10 @@ pages:
     file: pages/data.md
   - title: Evaluation
     file: pages/evaluation.md
+  - title: Terms
+    file: pages/terms.md
+  - title: Starting Kit and Sample Submission
+    file: pages/starting_kit.md
 
 # Definition of the tasks: Species A dev + final and Mimic dev + final
 tasks:
@@ -69,7 +73,7 @@ phases:
   name: Development
   description: 'Development phase: create models and submit results on validation
     and/or test data for hybrid detection; feedback provided on the validation set only.'
-  start: 6-15-2024 # Month/Day/Year
+  start: 6-15-2024 # Month-Day-Year
   end: 9-12-2024
   max_submissions_per_day: # limits are extra
   max_submissions: 
@@ -86,8 +90,8 @@ phases:
   start: 9-12-2024 # just last day?
   end: 9-12-2024
   max_submissions_per_day: 0
-  max_submissions: 100
-  execution_time_limit: 500
+  max_submissions: 1
+  execution_time_limit: 
   tasks:
   - 2
   - 3
@@ -101,34 +105,42 @@ leaderboards:
   title: Detection Rate
   key: detection-results
   columns:
-  - title: Prediction score Major
+  - title: Major Hybrids
     key: A_score_major
     index: 0
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Prediction score Minor
+  - title: Minor Hybrids
     key: A_score_minor
     index: 1
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Prediction score Combined
-    key: A_score_combined
+  - title: AUC Species A Hybrids
+    key: A_AUC
     index: 2
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Prediction score Mimics
+  - title: Mimic Hybrids
     key: mimic_score
     index: 3
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Challenge Score  # Removed Duration
-    key: challenge_score
+  - title: AUC Mimic Hybrids
+    key: mimic_AUC
     index: 4
     sorting: desc
-    computation: add   # Should we add or average?
-    computation_indexes: 2, 3   # Take combined score on Species A and Mimic?
-
+    computation: null
+    computation_indexes: null
+  - title: Challenge Score  # Removed Duration
+    key: challenge_score
+    index: 5
+    sorting: desc
+    computation: min   # Could we make our own from the scoring program or must it consider the other columns somehow?
+    computation_indexes: # Take scores on Species A and Mimic hybrid detection?
+      - 0
+      - 1
+      - 3   

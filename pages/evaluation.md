@@ -3,8 +3,8 @@ This is an anomaly detection problem, where the goal is to find hybrid butterfli
 
 There are 2 phases:
 1. **Development phase:**
-	* The provided training data contains images of all Species A subspecies with a signal set of the "Major hybrids" (the most common hybrids). 
-	* The goal is to train a model to detect hybrid butterflies of Species A subspecies among their parent subspecies and mimics of the Species A Major hybrid among its two parent subspecies.
+	* The provided training data contains images of all Species A subspecies with a signal set of the "Common hybrids" (the most common hybrids). 
+	* The goal is to train a model to detect hybrid butterflies of Species A subspecies among their parent subspecies and mimics of the Species A Common hybrid among its two parent subspecies.
 	* Upload your model; feedback will be provided on the validation performance for each component until the end of the challenge:
 		1. Major and Minor (less common) hybrid subspecies of Species A. 
 		2. Species B mimics of the Major hybrids and their parent subspecies.  
