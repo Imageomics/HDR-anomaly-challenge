@@ -31,7 +31,7 @@ tasks:
   description: 'Development phase: create models and submit results on validation
     and/or test data for Species A hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data_species_A
+  input_data: input_data/valid_A
   reference_data: reference_data/valid_A
   scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
@@ -40,7 +40,7 @@ tasks:
   description: 'Development phase: create models and submit results on validation
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data_mimic
+  input_data: input_data/valid_mimic
   reference_data: reference_data/valid_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
@@ -50,7 +50,7 @@ tasks:
     cloned and used to compute the final score on Species A hybrid detection. 
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
-  input_data: input_data_species_A
+  input_data: input_data/test_A
   reference_data: reference_data/test_A
   scoring_program: scoring_program_A
   ingestion_program: ingestion_program
@@ -60,7 +60,7 @@ tasks:
     cloned and used to compute the final score on Mimic hybrid detection. 
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
-  input_data: input_data_mimic
+  input_data: input_data/test_mimic
   reference_data: reference_data/test_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
