@@ -1,0 +1,5 @@
+accuracy: 1.0
+f1_score: 1.0
+hybrid_precision: 1.0
+hybrid_recall: 1.0
+roc_auc: 1.0
