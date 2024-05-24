@@ -7,4 +7,6 @@ This challenge is governed by the [contest rules--need to define]().
 
 
 This competition is intended to encourage and promote open science.
-As such, we expect that any pre-trained models used for this competition will also be open-source (or shared under open-source license). Additionally, the use of outside data will be permitted provided that it is publicly available and its use is shared at the end of the competition following FAIR principles.
+As such, we expect that any pre-trained models used for this competition will also be shared under an open-source license. However, the use of additional outside data is not permitted. Augmentation of provided training data is allowed.
+
+In the spirit of open science, we expect final training code and models to be shared at the end of the challenge.

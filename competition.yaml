@@ -31,8 +31,8 @@ tasks:
   description: 'Development phase: create models and submit results on validation
     and/or test data for Species A hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data/valid_A
-  reference_data: reference_data/valid_A
+  input_data: input_data/val_A
+  reference_data: reference_data/val_A
   scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
   - index: 1
@@ -40,8 +40,8 @@ tasks:
   description: 'Development phase: create models and submit results on validation
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data/valid_mimic
-  reference_data: reference_data/valid_mimic
+  input_data: input_data/val_mimic
+  reference_data: reference_data/val_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
   - index: 2
@@ -105,13 +105,13 @@ leaderboards:
   title: Detection Rate
   key: detection-results
   columns:
-  - title: Major Hybrids
+  - title: Signal Hybrids
     key: A_score_major
     index: 0
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Minor Hybrids
+  - title: Non-Signal Hybrids
     key: A_score_minor
     index: 1
     sorting: desc
