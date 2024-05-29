@@ -11,7 +11,12 @@ import pickle
 import os
 
 class Model:
-    def __init__(self, device='cuda'):
+    def __init__(self):
+        # model will be called from the load() method
+        self.clf = None
+
+    def load(self):
+        self.device='cuda'
         self.device=device
 
         model = create_model("hf-hub:imageomics/bioclip", output_dict=True, require_pretrained=True)
