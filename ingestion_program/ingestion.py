@@ -86,9 +86,10 @@ save_previous_results = False
 # and the results written to. Change the root_dir to your local directory.
 root_dir = "../"
 default_input_dir = root_dir + "input_data"
+default_ref_dir = root_dir + "reference_data"
 default_output_dir = root_dir + "sample_result_submission"
 default_program_dir = root_dir + "ingestion_program"
-default_submission_dir = root_dir + "baselines/DINO_SGD_code_submission"
+default_submission_dir = root_dir + "baselines/BioCLIP_code_submission"
 
 # =============================================================================
 # =========================== END USER OPTIONS ================================
@@ -96,27 +97,41 @@ default_submission_dir = root_dir + "baselines/DINO_SGD_code_submission"
 
 import os
 from sys import argv, path
+import pandas as pd
+from PIL import Image
+from tqdm import tqdm
 
-def write_results(outfile, scores):
-    """Should write the score to our output directory
-        TODO:
-    """
-    pass
+# def write_results(path, data_iter):
+#     """Should write the score to our output directory
+#        path: path of output file
+#        data_iter: a iterator of data
+#     """
+#     with open(path, 'w') as f:
+#         for data in data_iter[:-1]:
+#             f.write(data[0] + " " + data[1] + '\n')
+#         data = data_iter[-1]
+#         f.write(data[0] + " " + data[1] + '\n')
+    
+#     print("Write all the results to: " + path)
 
 if __name__ == "__main__":
     #### INPUT/OUTPUT: Get input and output directory names
+
     if len(argv)==1: # Use the default input and output directories if no arguments are provided
         input_dir = default_input_dir
+        ref_dir = default_ref_dir
         output_dir = default_output_dir
         program_dir= default_program_dir
         submission_dir= default_submission_dir
     else:
         input_dir = os.path.abspath(argv[1])
-        output_dir = os.path.abspath(argv[2])
-        program_dir = os.path.abspath(argv[3])
-        submission_dir = os.path.abspath(argv[4])
+        ref_dir = os.path.abspath(argv[2])
+        output_dir = os.path.abspath(argv[3])
+        program_dir = os.path.abspath(argv[4])
+        submission_dir = os.path.abspath(argv[5])
     if verbose:
         print("Using input_dir: " + input_dir)
+        print("Using ref_dir: " + ref_dir)
         print("Using output_dir: " + output_dir)
         print("Using program_dir: " + program_dir)
         print("Using submission_dir: " + submission_dir)
@@ -125,11 +140,30 @@ if __name__ == "__main__":
     path.append(submission_dir) # In order to access libraries of the user
     
     from model import Model
+
+    ref = pd.read_csv(ref_dir)
+
+    submit_model = Model(device="cuda")
+
+    with open(os.path.join(output_dir, "predictions.txt"), 'w') as f:
+
+        # scorelist = []
+        for idx, row in tqdm(ref.iterrows(), total=len(ref)):
+            image_path = os.path.join(input_dir, row['filename'])
+
+            try:
+                datapoint = Image.open(image_path)
+            except Exception as e:
+                print(f"{image_path}: {e}")
+                continue
+            
+            score = submit_model.predict(datapoint)
+            #? whether need to sanity check on the variable returned from submitted model
+            
+            # scorelist.append(str(round(score, 2)))
+            if idx ==  len(ref)-1:
+                f.write(row['CAMID'] + " " + str(round(score, 2)))
+            else:
+                f.write(row['CAMID'] + " " + str(round(score, 2)) + '\n')
     
-    path_to_csv_for_training = None # TODO
-    path_to_csv_for_testing = None # TODO
-    M = Model()
-    M.fit(path_to_csv_for_training)
-    scores = M.predict(path_to_csv_for_testing)
-    
-    write_results(os.path.join(output_dir, "scores.txt"), scores)
+    # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))
