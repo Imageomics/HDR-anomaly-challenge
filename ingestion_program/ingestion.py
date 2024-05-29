@@ -84,11 +84,6 @@ save_previous_results = False
 # Use default location for the input and output data:
 # If no arguments to run.py are provided, this is where the data will be found
 # and the results written to. Change the root_dir to your local directory.
-root_dir = "../"
-default_input_dir = root_dir + "input_data"
-default_output_dir = root_dir + "sample_result_submission"
-default_program_dir = root_dir + "ingestion_program"
-default_submission_dir = root_dir + "baselines/BioCLIP_code_submission"
 
 # =============================================================================
 # =========================== END USER OPTIONS ================================
@@ -117,16 +112,11 @@ from tqdm import tqdm
 if __name__ == "__main__":
     #### INPUT/OUTPUT: Get input and output directory names
 
-    if len(argv)==1: # Use the default input and output directories if no arguments are provided
-        input_dir = default_input_dir
-        output_dir = default_output_dir
-        program_dir= default_program_dir
-        submission_dir= default_submission_dir
-    else:
-        input_dir = os.path.abspath(argv[1])
-        output_dir = os.path.abspath(argv[2])
-        program_dir = os.path.abspath(argv[3])
-        submission_dir = os.path.abspath(argv[4])
+    input_dir = os.path.abspath(argv[1])
+    output_dir = os.path.abspath(argv[2])
+    program_dir = os.path.abspath(argv[3])
+    submission_dir = os.path.abspath(argv[4])
+    
     if verbose:
         print("Using input_dir: " + input_dir)
         print("Using output_dir: " + output_dir)
