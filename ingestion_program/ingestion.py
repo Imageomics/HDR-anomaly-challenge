@@ -133,7 +133,8 @@ if __name__ == "__main__":
 
 
     submit_model = Model()
-    submit_model.load(device="cuda")
+    submit_model.load()
+
 
 
     img_list = os.listdir(input_dir)

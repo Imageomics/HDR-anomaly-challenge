@@ -17,10 +17,9 @@ class Model:
 
     def load(self):
         self.device='cuda'
-        self.device=device
 
         model = create_model("hf-hub:imageomics/bioclip", output_dict=True, require_pretrained=True)
-        self.model = model.to(device)
+        self.model = model.to(self.device)
                 
         with open(os.path.join(os.path.dirname(__file__), "clf.pkl"), "rb") as f:
             self.clf = pickle.load(f)
