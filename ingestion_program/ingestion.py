@@ -84,37 +84,39 @@ save_previous_results = False
 # Use default location for the input and output data:
 # If no arguments to run.py are provided, this is where the data will be found
 # and the results written to. Change the root_dir to your local directory.
-root_dir = "../"
-default_input_dir = root_dir + "input_data"
-default_output_dir = root_dir + "sample_result_submission"
-default_program_dir = root_dir + "ingestion_program"
-default_submission_dir = root_dir + "baselines/DINO_SGD_code_submission"
 
 # =============================================================================
 # =========================== END USER OPTIONS ================================
 # =============================================================================
 
 import os
-from sys import argv, path
+from sys import argv, path, executable
+import subprocess
+from PIL import Image
+from tqdm import tqdm
 
-def write_results(outfile, scores):
-    """Should write the score to our output directory
-        TODO:
-    """
-    pass
+
+# def write_results(path, data_iter):
+#     """Should write the score to our output directory
+#        path: path of output file
+#        data_iter: a iterator of data
+#     """
+#     with open(path, 'w') as f:
+#         for data in data_iter[:-1]:
+#             f.write(data[0] + " " + data[1] + '\n')
+#         data = data_iter[-1]
+#         f.write(data[0] + " " + data[1] + '\n')
+    
+#     print("Write all the results to: " + path)
 
 if __name__ == "__main__":
     #### INPUT/OUTPUT: Get input and output directory names
-    if len(argv)==1: # Use the default input and output directories if no arguments are provided
-        input_dir = default_input_dir
-        output_dir = default_output_dir
-        program_dir= default_program_dir
-        submission_dir= default_submission_dir
-    else:
-        input_dir = os.path.abspath(argv[1])
-        output_dir = os.path.abspath(argv[2])
-        program_dir = os.path.abspath(argv[3])
-        submission_dir = os.path.abspath(argv[4])
+
+    input_dir = os.path.abspath(argv[1])
+    output_dir = os.path.abspath(argv[2])
+    program_dir = os.path.abspath(argv[3])
+    submission_dir = os.path.abspath(argv[4])
+    
     if verbose:
         print("Using input_dir: " + input_dir)
         print("Using output_dir: " + output_dir)
@@ -123,13 +125,40 @@ if __name__ == "__main__":
         
     path.append(program_dir) # In order to access libraries from our own code
     path.append(submission_dir) # In order to access libraries of the user
+
+    if os.path.isfile(os.path.join(submission_dir, "requirements.txt")):
+        subprocess.check_call([executable, "-m", "pip", "install", "-r", os.path.join(submission_dir, "requirements.txt")])
     
     from model import Model
+
+
+    submit_model = Model()
+    submit_model.load()
+
+
+
+    img_list = os.listdir(input_dir)
+    num_of_datapoint = len(img_list)
+
+    with open(os.path.join(output_dir, "predictions.txt"), 'w') as f:
+
+        # scorelist = []
+        for idx, filename in tqdm(enumerate(img_list), total=num_of_datapoint):
+            image_path = os.path.join(input_dir, filename)
+
+            try:
+                datapoint = Image.open(image_path)
+            except Exception as e:
+                print(f"{image_path}: {e}")
+                continue
+            
+            score = submit_model.predict(datapoint)
+            #? whether need to sanity check on the variable returned from submitted model
+            
+            # scorelist.append(str(round(score, 2)))
+            if idx ==  num_of_datapoint - 1:
+                f.write(filename + " " + str(round(score, 2)))
+            else:
+                f.write(filename + " " + str(round(score, 2)) + '\n')
     
-    path_to_csv_for_training = None # TODO
-    path_to_csv_for_testing = None # TODO
-    M = Model()
-    M.fit(path_to_csv_for_training)
-    scores = M.predict(path_to_csv_for_testing)
-    
-    write_results(os.path.join(output_dir, "scores.txt"), scores)
+    # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))
