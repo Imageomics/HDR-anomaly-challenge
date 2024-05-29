@@ -86,7 +86,6 @@ save_previous_results = False
 # and the results written to. Change the root_dir to your local directory.
 root_dir = "../"
 default_input_dir = root_dir + "input_data"
-default_ref_dir = root_dir + "reference_data"
 default_output_dir = root_dir + "sample_result_submission"
 default_program_dir = root_dir + "ingestion_program"
 default_submission_dir = root_dir + "baselines/BioCLIP_code_submission"
@@ -96,10 +95,11 @@ default_submission_dir = root_dir + "baselines/BioCLIP_code_submission"
 # =============================================================================
 
 import os
-from sys import argv, path
-import pandas as pd
+from sys import argv, path, executable
+import subprocess
 from PIL import Image
 from tqdm import tqdm
+
 
 # def write_results(path, data_iter):
 #     """Should write the score to our output directory
@@ -119,37 +119,39 @@ if __name__ == "__main__":
 
     if len(argv)==1: # Use the default input and output directories if no arguments are provided
         input_dir = default_input_dir
-        ref_dir = default_ref_dir
         output_dir = default_output_dir
         program_dir= default_program_dir
         submission_dir= default_submission_dir
     else:
         input_dir = os.path.abspath(argv[1])
-        ref_dir = os.path.abspath(argv[2])
-        output_dir = os.path.abspath(argv[3])
-        program_dir = os.path.abspath(argv[4])
-        submission_dir = os.path.abspath(argv[5])
+        output_dir = os.path.abspath(argv[2])
+        program_dir = os.path.abspath(argv[3])
+        submission_dir = os.path.abspath(argv[4])
     if verbose:
         print("Using input_dir: " + input_dir)
-        print("Using ref_dir: " + ref_dir)
         print("Using output_dir: " + output_dir)
         print("Using program_dir: " + program_dir)
         print("Using submission_dir: " + submission_dir)
         
     path.append(program_dir) # In order to access libraries from our own code
     path.append(submission_dir) # In order to access libraries of the user
+
+    if os.path.isfile(os.path.join(submission_dir, "requirements.txt")):
+        subprocess.check_call([executable, "-m", "pip", "install", "-r", os.path.join(submission_dir, "requirements.txt")])
     
     from model import Model
 
-    ref = pd.read_csv(ref_dir)
 
     submit_model = Model(device="cuda")
+
+    img_list = os.listdir(input_dir)
+    num_of_datapoint = len(img_list)
 
     with open(os.path.join(output_dir, "predictions.txt"), 'w') as f:
 
         # scorelist = []
-        for idx, row in tqdm(ref.iterrows(), total=len(ref)):
-            image_path = os.path.join(input_dir, row['filename'])
+        for idx, filename in tqdm(enumerate(img_list), total=num_of_datapoint):
+            image_path = os.path.join(input_dir, filename)
 
             try:
                 datapoint = Image.open(image_path)
@@ -161,9 +163,9 @@ if __name__ == "__main__":
             #? whether need to sanity check on the variable returned from submitted model
             
             # scorelist.append(str(round(score, 2)))
-            if idx ==  len(ref)-1:
-                f.write(row['CAMID'] + " " + str(round(score, 2)))
+            if idx ==  num_of_datapoint - 1:
+                f.write(filename + " " + str(round(score, 2)))
             else:
-                f.write(row['CAMID'] + " " + str(round(score, 2)) + '\n')
+                f.write(filename + " " + str(round(score, 2)) + '\n')
     
     # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))

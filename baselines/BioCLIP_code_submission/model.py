@@ -8,10 +8,9 @@ You must supply at least 4 methods:
 '''
 from open_clip import create_model
 from torchvision import transforms
-from tqdm import tqdm
 import torch
-import numpy as np
 import pickle
+import os
 
 class Model:
     def __init__(self, device='cuda'):
@@ -20,7 +19,7 @@ class Model:
         model = create_model("hf-hub:imageomics/bioclip", output_dict=True, require_pretrained=True)
         self.model = model.to(device)
                 
-        with open('/local/scratch/wu.5686/anomaly_challenge/model.pkl', 'rb') as f:
+        with open(os.path.join(os.path.dirname(__file__), "clf.pkl"), "rb") as f:
             self.clf = pickle.load(f)
 
         self.preprocess_img = transforms.Compose(
