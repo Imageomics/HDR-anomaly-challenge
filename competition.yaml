@@ -35,7 +35,7 @@ tasks:
   reference_data: reference_data/val_A
   scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
-  - index: 1
+- index: 1
   name: Mimic Development Task
   description: 'Development phase: create models and submit results on validation
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
@@ -44,7 +44,7 @@ tasks:
   reference_data: reference_data/val_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
-  - index: 2
+- index: 2
   name: Species A Final Task
   description: 'Final phase: submissions from the previous phase are automatically
     cloned and used to compute the final score on Species A hybrid detection. 
