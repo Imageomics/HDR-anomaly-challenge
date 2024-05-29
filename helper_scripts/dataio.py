@@ -1,4 +1,5 @@
 import yaml
+import pandas as pd
 
 class DictToObj:
     def __init__(self, **kwargs):
@@ -31,7 +32,9 @@ def parse_prediction_file(path):
     return camids, pred_vals
 
 def parse_solution_file(path):
-    camids, gt_vals = parse_delim_separated_text_file_as_columns(path)
+    df = pd.read_csv(path)
+    camids = df["CAMID"].values.tolist()
+    gt_vals = df["hybrid_stat_ref"].map(lambda x: int(x == "hybrid")).values.tolist()
     return camids, gt_vals
 
 def parse_major_minor_file(path):

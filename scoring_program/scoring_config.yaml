@@ -1,5 +1,4 @@
 reverse_score_prediction: false
-input_data: "reference_data/predictions.txt"
+input_data: "reference_data/butterfly_ref_test_A_predictions.txt"
 output_data: "reference_data/score.txt"
-solution_data: "reference_data/solutions.txt"
-major_minor_data: ""
+solution_data: "reference_data/butterfly_ref_test_A.csv"

@@ -71,7 +71,7 @@ def evaluate_major_minor_prediction(scores, labels, camids, major_cams, minor_ca
     
     return maj_acc, min_acc
 
-def score_predictions(pred_vals, sol_gt_aligned, reverse_score_prediction=False):
+def score_predictions(pred_camids, pred_vals, sol_gt_aligned, reverse_score_prediction=False, mm_vals_aligned=None):
     h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
     
     scores = {
@@ -81,10 +81,19 @@ def score_predictions(pred_vals, sol_gt_aligned, reverse_score_prediction=False)
         "roc_auc" : float(roc_auc),
         "accuracy" : float(acc)
     }
+    
+    if mm_vals_aligned:
+        pass
+        # TODO:
+        # Call evaluate_major_minor_prediction and add to scores
+        # NOTE: will have to handle incomplete list (for example: the mm_vals_aligned will not match the shape of all pred_vals)
+        # it's a subset
+        #evaluate_major_minor_prediction()
         
     return scores
 
 if __name__ == "__main__":
+
     # Get scoring configurations
     config = get_config()
     
@@ -99,9 +108,16 @@ if __name__ == "__main__":
         return [ref_vals[ref_camids.index(camid)] for camid in pred_camids]
     sol_camids, sol_gt
     sol_gt_aligned = align(sol_camids, sol_gt)
+    
+    # Optionally get major-minor list
+    mm_vals_aligned = None
+    if hasattr(config, 'major_minor_data') and config.major_minor_data:
+        report_major_minor_score = True
+        mm_camids, mm_vals = parse_major_minor_file(config.major_minor_data)
+        mm_vals_aligned = align(mm_camids, mm_vals)
         
     # Get scores
-    scores = score_predictions(pred_vals, sol_gt_aligned, config.reverse_score_prediction)
+    scores = score_predictions(pred_camids, pred_vals, sol_gt_aligned, config.reverse_score_prediction, mm_vals_aligned)
     print(scores)
     
     # Create ouput directory
