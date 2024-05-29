@@ -132,7 +132,9 @@ if __name__ == "__main__":
     from model import Model
 
 
-    submit_model = Model(device="cuda")
+    submit_model = Model()
+    submit_model.load(device="cuda")
+
 
     img_list = os.listdir(input_dir)
     num_of_datapoint = len(img_list)
