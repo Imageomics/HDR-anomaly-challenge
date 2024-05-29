@@ -2,7 +2,6 @@
 Sample predictive model.
 The ingestion program will call `predict` to get a prediction for each test image and then save the predictions for scoring. The following two methods are required:
 - predict: uses the model to perform predictions.
-- save: saves the model.
 - load: reloads the model.
 '''
 from open_clip import create_model
