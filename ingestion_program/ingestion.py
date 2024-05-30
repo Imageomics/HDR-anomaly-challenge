@@ -155,10 +155,10 @@ if __name__ == "__main__":
             score = submit_model.predict(datapoint)
             #? whether need to sanity check on the variable returned from submitted model
             
-            # scorelist.append(str(round(score, 2)))
+            # scorelist.append(str(round(score, 4)))
             if idx ==  num_of_datapoint - 1:
-                f.write(filename + " " + str(round(score, 2)))
+                f.write(filename + " " + str(round(score, 4)))
             else:
-                f.write(filename + " " + str(round(score, 2)) + '\n')
+                f.write(filename + " " + str(round(score, 4)) + '\n')
     
     # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))

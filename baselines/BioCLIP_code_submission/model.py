@@ -33,11 +33,11 @@ class Model:
     
 
     def predict(self, datapoint):
+        
         with torch.no_grad():
             image = self.preprocess_img(datapoint).to(self.device)
-            image_feature = self.model.encode_image(image.unsqueeze(0))
+            image_feature = self.model(image.unsqueeze(0))['image_features']
             image_feature = image_feature.detach().cpu().numpy()
-
             score = self.clf.predict_proba(image_feature)[:, 1][0]
         
         return score
