@@ -32,7 +32,7 @@ tasks:
     and/or test data for Species A hybrid detection; feedback provided on the validation set only.'
   is_public: false
   input_data: input_data/val_A
-  reference_data: reference_data/val_A
+  reference_data: reference_data/ref_val_A
   scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
 - index: 1
@@ -41,7 +41,7 @@ tasks:
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
   is_public: false
   input_data: input_data/val_mimic
-  reference_data: reference_data/val_mimic
+  reference_data: reference_data/ref_val_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
 - index: 2
@@ -51,7 +51,7 @@ tasks:
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
   input_data: input_data/test_A
-  reference_data: reference_data/test_A
+  reference_data: reference_data/ref_test_A
   scoring_program: scoring_program_A
   ingestion_program: ingestion_program
 - index: 3
@@ -61,7 +61,7 @@ tasks:
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
   input_data: input_data/test_mimic
-  reference_data: reference_data/test_mimic
+  reference_data: reference_data/ref_test_mimic
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
 solutions: []
