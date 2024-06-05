@@ -74,7 +74,7 @@ phases:
   description: 'Development phase: create models and submit results on validation
     and/or test data for hybrid detection; feedback provided on the validation set only.'
   start: 6-15-2024 # Month-Day-Year
-  end: 9-12-2024
+  end: 9-11-2024
   max_submissions_per_day: # limits are extra
   max_submissions: 
   execution_time_limit: 
@@ -99,11 +99,12 @@ phases:
 
 # Leaderboard
 # Precision doesn't show up in the Iris sample, but it is on the UI
-# UI also has Submission Rule option (Force Last?)
+# Submission Rule: participants choose which submission is used, but they can only have one submission at any given time.
 leaderboards:
 - index: 0
   title: Detection Rate
   key: detection-results
+  submission_rule: "Add_And_Delete"
   columns:
   - title: Signal Hybrids
     key: A_score_major
