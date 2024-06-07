@@ -8,7 +8,7 @@ title: Butterfly Hybrid Detection
 description: This challenge is to detect hybrids among two species of butterflies and their subspecies.
 image: Imageomics_logo_butterfly.png
 registration_auto_approve: True  # do not require approval from admin to join the comp
-docker_image: 'codalab/codalab-legacy:py37' # This likely needs updating
+docker_image: 'codalab/competitions-v2-compute-worker' # This needs updating (must have pillow, pandas, and tqdm)
 
 # Documentation web pages
 terms: pages/terms.md
@@ -32,7 +32,7 @@ tasks:
     and/or test data for Species A hybrid detection; feedback provided on the validation set only.'
   is_public: false
   input_data: input_data/val_A
-  reference_data: reference_data/ref_val_A
+  reference_data: reference_data/ref_val_A.csv
   scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
 - index: 1
@@ -41,7 +41,7 @@ tasks:
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
   is_public: false
   input_data: input_data/val_mimic
-  reference_data: reference_data/ref_val_mimic
+  reference_data: reference_data/ref_val_mimic.csv
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
 - index: 2
@@ -51,7 +51,7 @@ tasks:
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
   input_data: input_data/test_A
-  reference_data: reference_data/ref_test_A
+  reference_data: reference_data/ref_test_A.csv
   scoring_program: scoring_program_A
   ingestion_program: ingestion_program
 - index: 3
@@ -61,7 +61,7 @@ tasks:
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
   input_data: input_data/test_mimic
-  reference_data: reference_data/ref_test_mimic
+  reference_data: reference_data/ref_test_mimic.csv
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
 solutions: []
@@ -98,7 +98,6 @@ phases:
   solutions: []
 
 # Leaderboard
-# Precision doesn't show up in the Iris sample, but it is on the UI
 # Submission Rule: participants choose which submission is used, but they can only have one submission at any given time.
 leaderboards:
 - index: 0
@@ -144,4 +143,4 @@ leaderboards:
     computation_indexes: # Take scores on Species A and Mimic hybrid detection?
       - 0
       - 1
-      - 3   
+      - 3
