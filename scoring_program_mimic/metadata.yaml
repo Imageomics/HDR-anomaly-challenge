@@ -1,2 +1,2 @@
 # Modified from A3D3 scoring_program: https://github.com/katyagovorkova/HDRchallenge/blob/main/scoring_program/metadata.yaml 
-command: python3 HDR-anomaly-challenge/scoring_program/scoring.py HDR-anomaly-challenge/scoring_program/scoring_config.yaml
+command: python3 /app/program/score.py /app/input/ /app/output/
