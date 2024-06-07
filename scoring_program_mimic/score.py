@@ -127,14 +127,14 @@ if __name__ == "__main__":
     file_list = os.listdir(solutions)
     print(f"files in {solutions}: {file_list}")
     # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
-    if "val_mimic.csv" in file_list:
-        solution_file = os.path.join(solutions,'val_mimic.csv')
+    if "ref_val_mimic.csv" in file_list:
+        solution_file = os.path.join(solutions,'ref_val_mimic.csv')
         sol_filenames, sol_gt = parse_solution_file(solution_file)
-        print("got solutions with 'val_mimic.csv'")
-    elif "test_mimic.csv" in file_list:
-        solution_file = os.path.join(solutions,'test_mimic.csv')
+        print("got solutions with 'ref_val_mimic.csv'")
+    elif "ref_test_mimic.csv" in file_list:
+        solution_file = os.path.join(solutions,'ref_test_mimic.csv')
         sol_filenames, sol_gt = parse_solution_file(solution_file)
-        print("got solutions with 'test_mimic.csv'")
+        print("got solutions with 'ref_test_mimic.csv'")
     elif len(file_list) > 0:
         solution_file = os.path.join(solutions, file_list[0])
         sol_filenames, sol_gt = parse_solution_file(solution_file)
