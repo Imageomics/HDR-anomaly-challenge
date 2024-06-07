@@ -1,4 +1,5 @@
 import yaml
+import json
 import pandas as pd
 
 class DictToObj:
@@ -28,15 +29,21 @@ def parse_delim_separated_text_file_as_columns(path, delim=" "):
     return columns
 
 def parse_prediction_file(path):
-    camids, pred_vals = parse_delim_separated_text_file_as_columns(path)
-    return camids, pred_vals
+    filenames, pred_vals = parse_delim_separated_text_file_as_columns(path)
+    return filenames, pred_vals
 
 def parse_solution_file(path):
     df = pd.read_csv(path)
-    camids = df["CAMID"].values.tolist()
+    filenames = df["filename"].values.tolist()
     gt_vals = df["hybrid_stat_ref"].map(lambda x: int(x == "hybrid")).values.tolist()
-    return camids, gt_vals
+    return filenames, gt_vals
 
-def parse_major_minor_file(path):
-    camids, major_minor_vals = parse_delim_separated_text_file_as_columns(path)
-    return camids, major_minor_vals
+
+def save_scores(path, scores):
+    score_record = {
+        "mimic_score": scores["hybrid_recall"],
+        "mimic_AUC": scores["roc_auc"]
+    }
+    print(f"Defined score record for leaderboard {score_record}")
+    with open(path, "w") as f:
+        f.write(json.dumps(score_record))
