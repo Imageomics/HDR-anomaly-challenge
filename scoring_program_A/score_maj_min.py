@@ -20,7 +20,7 @@ HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts
 
 # Importing functions from helper_scripts
 sys.path.append(HELPER_DIRECTORY)
-from dataio import parse_prediction_file, parse_solution_file, parse_major_minor_file, save_scores, parse_yaml_file, write_yaml_file
+from dataio import parse_prediction_file, parse_solution_file, save_scores, parse_yaml_file, write_yaml_file
 
 '''
 # This is for local testing only, along with DEFAULT_CONFIG defined above
