@@ -36,19 +36,18 @@ def parse_solution_file(path):
     df = pd.read_csv(path)
     filenames = df["filename"].values.tolist()
     gt_vals = df["hybrid_stat_ref"].map(lambda x: int(x == "hybrid")).values.tolist()
-    return filenames, gt_vals
+    # This assumes that there are only 2 values ("major", "minor")
+    is_major_vals = df["ssp_indicator"].map(lambda x: int(x == "major")).values.tolist() 
+    return filenames, gt_vals, is_major_vals
 
 def parse_major_minor_file(path):
     filenames, major_minor_vals = parse_delim_separated_text_file_as_columns(path)
     return filenames, major_minor_vals
 
-
 def save_scores(path, scores):
-    ## TODO: This needs proper labels after re-write
-    # Will return scores now, though they are NOT properly labeled
     score_record = {
-        "A_score_major": scores["hybrid_recall"],
-        "A_score_minor": scores["accuracy"],
+        "A_score_major": scores["major_recall"],
+        "A_score_minor": scores["minor_recall"],
         "A_AUC": scores["roc_auc"]
     }
     with open(path, "w") as f:
