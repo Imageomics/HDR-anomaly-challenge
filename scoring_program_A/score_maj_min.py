@@ -66,18 +66,28 @@ def evaluate(scores, labels, reversed=False):
 
     return h_recall, h_precision, f1, roc_auc, acc
 
-def evaluate_major_minor_prediction(scores, labels, filenames, major_cams, minor_cams, reversed=False):
-    
-    preds, gt = evaluate_prediction(scores, labels, reversed=reversed)
-    tmp = list(zip(scores, labels, filenames))
+def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, reversed=False):
+    # TODO: the logic here sorts the preds and lables for evaluation
+    # Then we sort again in order to align the mm_vals...
+    # While likely correct here, there's probably a lot of redundancy
+    # that could be cleaned up.
+    preds, gt = evaluate_prediction(pred_vals, labels, reversed=reversed)
+    tmp = list(zip(pred_vals, labels, mm_vals))
     tmp = sorted(tmp, key=lambda x: x[0], reverse=reversed)
-    sorted_filenames = np.array(tmp)[:, 2]
-    major_idx = np.isin(np.array(sorted_filenames), major_cams)
-    minor_idx = np.isin(np.array(sorted_filenames), minor_cams)
+    sorted_mm_vals = np.array(tmp)[:, 2]
+    # We are assuming that we are only looking at major and minor subspecies and nothing else, 
+    # so there should only be two options.
+    major_idx = np.array(sorted_mm_vals) == 1
+    minor_idx = np.array(sorted_mm_vals) == 0
     maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
     min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
     
-    return maj_acc, min_acc
+    scores = {
+        "major_recall" : maj_acc,
+        "minor_recall" : min_acc
+    }
+    
+    return scores
 
 def score_predictions(pred_vals, sol_gt_aligned, mm_vals_aligned=None, reverse_score_prediction=False):
     h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
@@ -91,15 +101,8 @@ def score_predictions(pred_vals, sol_gt_aligned, mm_vals_aligned=None, reverse_s
     }
     
     if mm_vals_aligned:
-        pass
-        # TODO:
-        # Call evaluate_major_minor_prediction and add to scores
-        # NOTE: will have to handle incomplete list (for example: the mm_vals_aligned will not match the shape of all pred_vals)
-        # it's a subset
-        # Full CSV labeled: 
-        # the reference csv file has column `ssp_indicator` with values `major` and `minor` for all entries
-        #evaluate_major_minor_prediction()
-        # scores should have major_recall, minor_recall, and roc_auc (from above)
+        mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, reversed=reverse_score_prediction)
+        scores.update(mm_scores)
         
     return scores
 
@@ -138,15 +141,15 @@ if __name__ == "__main__":
     # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
     if "ref_val_A.csv" in file_list:
         solution_file = os.path.join(solutions,'ref_val_A.csv')
-        sol_filenames, sol_gt = parse_solution_file(solution_file)
+        sol_filenames, sol_gt, mm_vals = parse_solution_file(solution_file)
         print("got solutions with 'ref_val_A.csv'")
     elif "ref_test_A.csv" in file_list:
         solution_file = os.path.join(solutions,'ref_test_A.csv')
-        sol_filenames, sol_gt = parse_solution_file(solution_file)
+        sol_filenames, sol_gt, mm_vals = parse_solution_file(solution_file)
         print("got solutions with 'ref_test_A.csv'")
     elif len(file_list) > 0:
         solution_file = os.path.join(solutions, file_list[0])
-        sol_filenames, sol_gt = parse_solution_file(solution_file)
+        sol_filenames, sol_gt, mm_vals = parse_solution_file(solution_file)
         print(f"got solutions with {file_list[0]}")
     else:
         sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
@@ -154,22 +157,8 @@ if __name__ == "__main__":
     # Align predictions with solution via filename
     def align(ref_filenames, ref_vals):
         return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames]
-    sol_filenames, sol_gt
     sol_gt_aligned = align(sol_filenames, sol_gt)
-    
-
-    ## TODO: This needs re-write
-    # Optionally get major-minor list
-    # the reference csv file has column `ssp_indicator` with values `major` and `minor`
-    mm_vals_aligned = None
-    '''
-    if hasattr(config, 'major_minor_data') and config.major_minor_data:
-        report_major_minor_score = True
-        mm_filenames, mm_vals = parse_major_minor_file(config.major_minor_data)
-        mm_vals_aligned = align(mm_filenames, mm_vals)
-    '''
-    ## End part needing re-write
-
+    mm_vals_aligned = align(sol_filenames, mm_vals)
 
     # Get scores
     scores = score_predictions(pred_vals, sol_gt_aligned, mm_vals_aligned) #, config.reverse_score_prediction)
