@@ -71,14 +71,15 @@ def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, reversed=False):
     # Then we sort again in order to align the mm_vals...
     # While likely correct here, there's probably a lot of redundancy
     # that could be cleaned up.
+    print("Evaluating performance on signal vs non-signal hybrids")
     preds, gt = evaluate_prediction(pred_vals, labels, reversed=reversed)
     tmp = list(zip(pred_vals, labels, mm_vals))
     tmp = sorted(tmp, key=lambda x: x[0], reverse=reversed)
     sorted_mm_vals = np.array(tmp)[:, 2]
-    # We are assuming that we are only looking at major and minor subspecies and nothing else, 
-    # so there should only be two options.
-    major_idx = np.array(sorted_mm_vals) == 1
-    minor_idx = np.array(sorted_mm_vals) == 0
+    # We are only looking at major and minor subspecies and nothing else, 
+    # so there are only two options.
+    major_idx = np.nonzero(sorted_mm_vals  == '1')
+    minor_idx = np.nonzero(sorted_mm_vals == '0')
     maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
     min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
     
@@ -86,6 +87,7 @@ def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, reversed=False):
         "major_recall" : maj_acc,
         "minor_recall" : min_acc
     }
+    print(scores)
     
     return scores
 
@@ -103,6 +105,8 @@ def score_predictions(pred_vals, sol_gt_aligned, mm_vals_aligned=None, reverse_s
     if mm_vals_aligned:
         mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, reversed=reverse_score_prediction)
         scores.update(mm_scores)
+    else:
+        print("mm_vals not aligning")
         
     return scores
 
