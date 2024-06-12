@@ -8,17 +8,21 @@ title: Butterfly Hybrid Detection
 description: This challenge is to detect hybrids among two species of butterflies and their subspecies.
 image: Imageomics_logo_butterfly.png
 registration_auto_approve: True  # do not require approval from admin to join the comp
-docker_image: 'codalab/codalab-legacy:py37' # This likely needs updating
+docker_image: 'codalab/competitions-v2-compute-worker' # This needs updating (must have pillow, pandas, and tqdm)
 
 # Documentation web pages
-terms: pages/terms.html
+terms: pages/terms.md
 pages:
   - title: Overview
-    file: pages/overview.html
+    file: pages/overview.md
   - title: Data
-    file: pages/data.html
+    file: pages/data.md
   - title: Evaluation
-    file: pages/evaluation.html
+    file: pages/evaluation.md
+  - title: Terms
+    file: pages/terms.md
+  - title: Starting Kit and Sample Submission
+    file: pages/starting_kit.md
 
 # Definition of the tasks: Species A dev + final and Mimic dev + final
 tasks:
@@ -27,37 +31,37 @@ tasks:
   description: 'Development phase: create models and submit results on validation
     and/or test data for Species A hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data_species_A
-  reference_data: reference_data/valid_A
-  scoring_program: scoring_program_A
+  input_data: input_data/val_A
+  reference_data: reference_data/ref_val_A.csv
+  scoring_program: scoring_program_A  # Only required part along with name and description
   ingestion_program: ingestion_program
-  - index: 1
+- index: 1
   name: Mimic Development Task
   description: 'Development phase: create models and submit results on validation
     and/or test data for Mimic hybrid detection; feedback provided on the validation set only.'
   is_public: false
-  input_data: input_data_mimic
-  reference_data: reference_data/valid_mimic
+  input_data: input_data/val_mimic
+  reference_data: reference_data/ref_val_mimic.csv
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
-  - index: 2
+- index: 2
   name: Species A Final Task
   description: 'Final phase: submissions from the previous phase are automatically
     cloned and used to compute the final score on Species A hybrid detection. 
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
-  input_data: input_data_species_A
-  reference_data: reference_data/test_A
+  input_data: input_data/test_A
+  reference_data: reference_data/ref_test_A.csv
   scoring_program: scoring_program_A
   ingestion_program: ingestion_program
 - index: 3
-  name: Final Task
+  name: Final Task Mimic
   description: 'Final phase: submissions from the previous phase are automatically
     cloned and used to compute the final score on Mimic hybrid detection. 
     The results on the test set will be revealed when the organizers make them available.'
   is_public: false
-  input_data: input_data_mimic
-  reference_data: reference_data/test_mimic
+  input_data: input_data/test_mimic
+  reference_data: reference_data/ref_test_mimic.csv
   scoring_program: scoring_program_mimic
   ingestion_program: ingestion_program
 solutions: []
@@ -69,11 +73,11 @@ phases:
   name: Development
   description: 'Development phase: create models and submit results on validation
     and/or test data for hybrid detection; feedback provided on the validation set only.'
-  start: 6-1-2024 # Month/Day/Year
-  end: 8-30-2024
-  max_submissions_per_day: 5
-  max_submissions: 100
-  execution_time_limit: 500
+  start: 6-15-2024 # Month-Day-Year
+  end: 9-11-2024
+  max_submissions_per_day: # limits are extra
+  max_submissions: 
+  execution_time_limit: 
   tasks:
   - 0
   - 1
@@ -83,60 +87,60 @@ phases:
   description: 'Final phase: submissions from the previous phase are automatically
     cloned and used to compute the final score. The results on the test set will be
     revealed when the organizers make them available.'
-  start: 8-31-2024 # just last day?
-  end: 8-31-2024
+  start: 9-12-2024 # just last day?
+  end: 9-12-2024
   max_submissions_per_day: 0
-  max_submissions: 100
-  execution_time_limit: 500
+  max_submissions: 1
+  execution_time_limit: 
   tasks:
   - 2
   - 3
   solutions: []
 
 # Leaderboard
+# Submission Rule: participants choose which submission is used, but they can only have one submission at any given time.
 leaderboards:
 - index: 0
-  title: Species A Results
-  key: Results-A
+  title: Detection Rate
+  key: detection-results
+  submission_rule: "Add_And_Delete"
   columns:
-  - title: Prediction score Major
-    key: set1_score_major
+  - title: Signal Hybrids
+    key: A_score_major
     index: 0
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Prediction score Minor
-    key: set1_score_minor
+  - title: Non-Signal Hybrids
+    key: A_score_minor
     index: 1
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Prediction score Combined
-    key: set1_score_combined
+  - title: AUC Species A Hybrids
+    key: A_AUC
     index: 2
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Duration 
-    key: Duration_A
+  - title: Mimic Hybrids
+    key: mimic_score
     index: 3
     sorting: desc
     computation: null
     computation_indexes: null
-- index: 0
-  title: Mimic Results
-  key: Results-mimic
-  columns:
-  - title: Prediction score
-    key: set2_score
-    index: 0
+  - title: AUC Mimic Hybrids
+    key: mimic_AUC
+    index: 4
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Duration 
-    key: Duration_mimic
-    index: 1
+  - title: Challenge Score  # Removed Duration
+    key: challenge_score
+    index: 5
     sorting: desc
-    computation: null
-    computation_indexes: null
-
+    computation: min   # Could we make our own from the scoring program or must it consider the other columns somehow?
+    computation_indexes: # Take scores on Species A and Mimic hybrid detection?
+      - 0
+      - 1
+      - 3
