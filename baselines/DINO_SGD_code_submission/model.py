@@ -31,11 +31,13 @@ class Model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
+        self.device="cuda"
         
     def load(self):
         # DINO backbone
-        self.model = AutoModel.from_pretrained(self.dino_name)
-        self.model.eval()
+        model = AutoModel.from_pretrained(self.dino_name)
+        model.eval()
+        self.model = model.to(self.device)
         
         # Classifier
         non_hybrid_weight = 1
@@ -48,7 +50,7 @@ class Model:
         
         
     def _get_features(self, x: torch.Tensor) -> torch.Tensor:
-        feats = self.model(x)
+        feats = self.model(x)[0]
         # https://github.com/huggingface/transformers/blob/main/src/transformers/models/dinov2/modeling_dinov2.py#L707
         cls_token = feats[:, 0]
         patch_tokens = feats[:, 1:]
@@ -60,7 +62,7 @@ class Model:
         return self.clf.predict_proba(np_features)[0, 1] # Since a batch of 1, just extract float
 
     def predict(self, x: PIL.Image) -> float:
-        x_tensor = self.pil_transform_fn(x).unsqueeze(0)
+        x_tensor = self.pil_transform_fn(x).to(self.device).unsqueeze(0)
         features = self._get_features(x_tensor)
         prediction = self._get_clf_prediction(features)
         return prediction
