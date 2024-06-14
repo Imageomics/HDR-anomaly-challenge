@@ -179,4 +179,3 @@ if __name__ == "__main__":
         print(f"we looped {idx} times")
         
         
-    # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))
