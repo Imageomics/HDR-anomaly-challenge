@@ -92,8 +92,7 @@ save_previous_results = False
 import os
 from sys import argv, path, executable
 import subprocess
-from PIL import Image
-from tqdm import tqdm
+import time
 
 
 # def write_results(path, data_iter):
@@ -111,27 +110,37 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     #### INPUT/OUTPUT: Get input and output directory names
+    print("We're running ingestion")
 
     input_dir = os.path.abspath(argv[1])
     output_dir = os.path.abspath(argv[2])
     program_dir = os.path.abspath(argv[3])
     submission_dir = os.path.abspath(argv[4])
     
-    if verbose:
-        print("Using input_dir: " + input_dir)
-        print("Using output_dir: " + output_dir)
-        print("Using program_dir: " + program_dir)
-        print("Using submission_dir: " + submission_dir)
+    #if verbose:
+    print("Using input_dir: " + input_dir)
+    print("Using output_dir: " + output_dir)
+    print("Using program_dir: " + program_dir)
+    print("Using submission_dir: " + submission_dir)
         
     path.append(program_dir) # In order to access libraries from our own code
     path.append(submission_dir) # In order to access libraries of the user
 
+    start = time.time()
     if os.path.isfile(os.path.join(submission_dir, "requirements.txt")):
         subprocess.check_call([executable, "-m", "pip", "install", "-r", os.path.join(submission_dir, "requirements.txt")])
-    
+    end = time.time()
+
+    elapsed = time.strftime("%H:%M:%S", time.gmtime(end - start))
+
+    print(f"pip handling packages takes {elapsed}.")
+
+    from PIL import Image
+    from tqdm import tqdm
     from model import Model
+    
 
-
+    print("model imported")
     submit_model = Model()
     submit_model.load()
 
@@ -141,12 +150,14 @@ if __name__ == "__main__":
     num_of_datapoint = len(img_list)
 
     with open(os.path.join(output_dir, "predictions.txt"), 'w') as f:
-
+        print("predictions file opened")
         # scorelist = []
+        start = time.time()
         for idx, filename in tqdm(enumerate(img_list), total=num_of_datapoint):
-            image_path = os.path.join(input_dir, filename)
-
             try:
+                image_path = os.path.join(input_dir, filename)
+                if os.path.isdir(image_path):
+                    continue
                 datapoint = Image.open(image_path)
             except Exception as e:
                 print(f"{image_path}: {e}")
@@ -160,5 +171,12 @@ if __name__ == "__main__":
                 f.write(filename + " " + str(round(score, 4)))
             else:
                 f.write(filename + " " + str(round(score, 4)) + '\n')
-    
+        end = time.time()
+        elapsed = time.strftime("%H:%M:%S", time.gmtime(end - start))
+
+        print(f"model inference takes {elapsed}.")
+
+        print(f"we looped {idx} times")
+        
+        
     # write_results(os.path.join(output_dir, "predictions.txt"), zip(ref['CAMID'].values.tolist(), scorelist))
