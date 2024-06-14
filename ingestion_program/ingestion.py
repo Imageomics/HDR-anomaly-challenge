@@ -117,7 +117,6 @@ if __name__ == "__main__":
     program_dir = os.path.abspath(argv[3])
     submission_dir = os.path.abspath(argv[4])
     
-    #if verbose:
     print("Using input_dir: " + input_dir)
     print("Using output_dir: " + output_dir)
     print("Using program_dir: " + program_dir)
