@@ -31,7 +31,7 @@ class Model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        self.device="cpu"
+        self.device='cuda' if torch.cuda.is_available() else 'cpu'
         
     def load(self):
         # DINO backbone
