@@ -8,8 +8,8 @@ import sys
 
 # Added to address lack of base container, can remove once created
 from sys import executable
-import subprocess
-subprocess.check_call([executable, "-m", "pip", "install", "-r", str(pathlib.Path(__file__).parent.resolve() / "requirements.txt")])
+# import subprocess
+# subprocess.check_call([executable, "-m", "pip", "install", "-r", str(pathlib.Path(__file__).parent.resolve() / "requirements.txt")])
 
 import numpy as np
 from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score, accuracy_score
@@ -78,8 +78,8 @@ def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, reversed=False):
     sorted_mm_vals = np.array(tmp)[:, 2]
     # We are only looking at major and minor subspecies and nothing else, 
     # so there are only two options.
-    major_idx = np.nonzero(sorted_mm_vals  == '1')
-    minor_idx = np.nonzero(sorted_mm_vals == '0')
+    major_idx = np.nonzero((sorted_mm_vals  == '1') & (gt == 1))
+    minor_idx = np.nonzero((sorted_mm_vals == '0') & (gt == 1))
     maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
     min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
     
