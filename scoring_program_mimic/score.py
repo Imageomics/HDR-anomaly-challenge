@@ -5,17 +5,10 @@
 import os
 import pathlib
 import sys
-
-# Added to address lack of base container, can remove once created
-from sys import executable
-import subprocess
-subprocess.check_call([executable, "-m", "pip", "install", "-r", str(pathlib.Path(__file__).parent.resolve() / "requirements.txt")])
-
 import numpy as np
 from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score, accuracy_score
 
 # Constants
-#DEFAULT_CONFIG = pathlib.Path(__file__).parent.resolve() / "scoring_config.yaml"
 HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts")
 
 # Importing functions from helper_scripts

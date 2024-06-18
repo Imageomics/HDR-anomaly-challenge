@@ -42,71 +42,11 @@
 # Modified by Ivan Judson and Christophe Poulain, Microsoft, December 2013
 # Last modifications Isabelle Guyon, October 2017
 
-# =========================== BEGIN OPTIONS ==============================
-# Verbose mode:
-##############
-# Recommended to keep verbose = True: shows various progression messages
-verbose = True # outputs messages to stdout and stderr for debug purposes
-
-# Debug level:
-##############
-# 0: run the code normally, using the time budget of the tasks
-# 1: run the code normally, but limits the time to max_time
-# 2: run everything, but do not train, generate random outputs in max_time
-# 3: stop before the loop on datasets
-# 4: just list the directories and program version
-debug_mode = 0
-
-# Time budget
-#############
-# Maximum time of training in seconds PER DATASET (there may be several datasets).
-# The code should keep track of time spent and NOT exceed the time limit
-# in the dataset "info" file, stored in D.info['time_budget'], see code below.
-# If debug >=1, you can decrease the maximum time (in sec) with this variable:
-max_time = 500
-
-# Maximum number of cycles, number of samples, and estimators
-#############################################################
-# Your training algorithm may be fast, so you may want to limit anyways the
-# number of points on your learning curve (this is on a log scale, so each
-# point uses twice as many time than the previous one.)
-# The original code was modified to do only a small "time probing" followed
-# by one single cycle. We can now also give a maximum number of estimators
-# (base learners).
-max_cycle = 1
-max_estimators = float('Inf')
-max_samples = 50000
-
-# I/O defaults
-##############
-# If true, the previous output directory is not overwritten, it changes name
-save_previous_results = False
-# Use default location for the input and output data:
-# If no arguments to run.py are provided, this is where the data will be found
-# and the results written to. Change the root_dir to your local directory.
-
-# =============================================================================
-# =========================== END USER OPTIONS ================================
-# =============================================================================
-
 import os
 from sys import argv, path, executable
 import subprocess
 import time
 
-
-# def write_results(path, data_iter):
-#     """Should write the score to our output directory
-#        path: path of output file
-#        data_iter: a iterator of data
-#     """
-#     with open(path, 'w') as f:
-#         for data in data_iter[:-1]:
-#             f.write(data[0] + " " + data[1] + '\n')
-#         data = data_iter[-1]
-#         f.write(data[0] + " " + data[1] + '\n')
-    
-#     print("Write all the results to: " + path)
 
 if __name__ == "__main__":
     #### INPUT/OUTPUT: Get input and output directory names
@@ -150,7 +90,6 @@ if __name__ == "__main__":
 
     with open(os.path.join(output_dir, "predictions.txt"), 'w') as f:
         print("predictions file opened")
-        # scorelist = []
         start = time.time()
         for idx, filename in tqdm(enumerate(img_list), total=num_of_datapoint):
             try:
@@ -163,9 +102,7 @@ if __name__ == "__main__":
                 continue
             
             score = submit_model.predict(datapoint)
-            #? whether need to sanity check on the variable returned from submitted model
-            
-            # scorelist.append(str(round(score, 4)))
+
             if idx ==  num_of_datapoint - 1:
                 f.write(filename + " " + str(round(score, 4)))
             else:

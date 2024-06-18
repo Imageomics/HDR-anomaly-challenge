@@ -31,7 +31,7 @@ class Model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        self.device="cuda"
+        self.device="cpu"
         
     def load(self):
         # DINO backbone
