@@ -42,6 +42,7 @@
 # Modified by Ivan Judson and Christophe Poulain, Microsoft, December 2013
 # Last modifications Isabelle Guyon, October 2017
 
+# ===== Begin Imageomics modifications =====
 import os
 from sys import argv, path, executable
 import subprocess
