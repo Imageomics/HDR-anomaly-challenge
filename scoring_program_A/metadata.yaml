@@ -1,2 +1,0 @@
-# Modified from A3D3 scoring_program: https://github.com/katyagovorkova/HDRchallenge/blob/main/scoring_program/metadata.yaml 
-command: python3 /app/program/score_maj_min.py /app/input/ /app/output/
