@@ -29,10 +29,8 @@ ingestion_program/
     metadata.yaml
 input_data/
     # Images used for testing submitted models (images must be zipped together directly under input_data, not within a subfolder)
-    `val_A.zip`
-    `val_mimic.zip`
-    `test_A.zip`
-    `test_mimic.zip`
+    `val.zip`
+    `test.zip`
 pages/
     # These will be all the optional tabs under "Get Started" on the challenge page. They are used to describe the challenge for participants
     data.md
@@ -42,25 +40,21 @@ pages/
     terms.md
 reference_data/
     # Labels for the images in input_data/. Can be .txt, .csv, etc.
-    `ref_val_A.csv`
-    `ref_val_mimic.csv`
-    `ref_test_A.csv`
-    `ref_test_mimic.csv`
-scoring_program_A/
+    `ref_val.csv`
+    `ref_test.csv`
+scoring_program/
     helper_scripts/
         dataio.py
     metadata.yaml
-    score_A.py
-socring_program_mimic/
-    helper_scripts/
-        dataio.py
-    metadata.yaml
-    score_mimic.py
+    score_combined.py
 ```
 
 ### Notes on Structure
 
-- This is a challenge with two different scored tasks (hence, the two scoring programs). If you're adapting this for your own challenge, the only thing to potentially change in `metadata.yaml` (under the scoring & ingestion programs) is the filename in `/app/program/<ingestion/score-file>.py`. The input and output to these files is handled by the CodaBench backend based on the information provided in `competition.yaml` for the tasks and phases. It will run through each task once fully (from ingestion through scoring) before moving on to the next task--they are not connected to each other.
+- This is a challenge with two different scored objectives combined into one program (or `task`) to unify the leaderboard. If you're adapting this for your own challenge, the only thing to potentially change in `metadata.yaml` (under the scoring & ingestion programs) is the filename in `/app/program/<ingestion/score-file>.py`. The input and output to these files is handled by the CodaBench backend based on the information provided in `competition.yaml` for the tasks and phases. 
+  - If you choose to have two tasks, it will run through each task once fully (from ingestion through scoring) before moving on to the next task--they are not connected to each other. This creates two separate leaderboards, hence the combination.
 - The base container specified in the `competition.yaml` must have the requirements for the ingestion and scoring programs. These can be manually imported through a `requirements.txt`, but then each of these files will need to do so at the beginning. It is better to install these requirements in the base container and allow for participants to include a requirements file with their model's needed programs.
   - Example: For this challenge, our container must have (at minimum) `pillow`, `pandas`, and `tqdm`. The base container used for this competition will be provided.
+  - Any requirements used by participants must be on the approved whitelist (or participants must reach out to request their addition) for security purposes.
 - Scores must be saved to a `score.json` file where the keys detailed in the `Leaderboard` section of the `competition.yaml` are give as the keys for the scores.
+- This full collection of files and folders is zipped as-is to upload the bundle to CodaBench.
