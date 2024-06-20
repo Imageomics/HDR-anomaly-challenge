@@ -16,7 +16,7 @@ class Model:
         self.clf = None
 
     def load(self):
-        self.device='cuda'
+        self.device='cuda' if torch.cuda.is_available() else 'cpu'
 
         model = create_model("hf-hub:imageomics/bioclip", output_dict=True, require_pretrained=True)
         self.model = model.to(self.device)
