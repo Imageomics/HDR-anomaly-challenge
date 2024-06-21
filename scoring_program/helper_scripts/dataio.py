@@ -30,6 +30,7 @@ def parse_solution_file_A(path):
     df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
     df = df.loc[df["ssp_indicator"] != "mimic"].copy()
     filenames = df["filename"].values.tolist()
+    # hybrid stat is the 0-1 indicator
     gt_vals = list(df["hybrid_stat"])
     # This assumes that there are only 2 values ("major", "minor")
     is_major_vals = df["ssp_indicator"].map(lambda x: int(x == "major")).values.tolist() 
@@ -40,8 +41,9 @@ def parse_solution_file_mimic(path):
     df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
     df = df.loc[df["ssp_indicator"] == "mimic"].copy()
     filenames = df["filename"].values.tolist()
+    # hybrid stat is the 0-1 indicator
     gt_vals = list(df["hybrid_stat"])
-    return filenames, gt_vals
+    return filenames, gt_vals, df
 
 
 def parse_major_minor_file(path):

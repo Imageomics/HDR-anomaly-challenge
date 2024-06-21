@@ -60,18 +60,26 @@ def evaluate(scores, labels, reversed=False):
 
     return h_recall, h_precision, f1, roc_auc, acc
 
-def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, score_df, reversed=False):
+def evaluate_major_minor_prediction(score_df):
+    #evaluate_major_minor_prediction(pred_vals, labels, mm_vals, score_df, reversed=False):
     # TODO: the logic here sorts the preds and lables for evaluation
     # Then we sort again in order to align the mm_vals...
     # While likely correct here, there's probably a lot of redundancy
     # that could be cleaned up.
     print("Evaluating performance on signal vs non-signal hybrids")
+    '''
     preds, gt = evaluate_prediction(pred_vals, labels, reversed=reversed)
     tmp = list(zip(pred_vals, labels, mm_vals))
     tmp = sorted(tmp, key=lambda x: x[0], reverse=reversed)
     sorted_mm_vals = np.array(tmp)[:, 2]
     # We are only looking at major and minor subspecies and nothing else, 
     # so there are only two options.
+    major_idx = np.nonzero((sorted_mm_vals  == '1') & (gt == 1))
+    minor_idx = np.nonzero((sorted_mm_vals == '0') & (gt == 1))
+    maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
+    min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
+    '''
+    # Set to compare just hybrids and look if they're predicted as such
     major_true_df = score_df.loc[(score_df["ssp_indicator"] == "major") & (score_df["hybrid_stat_ref" == 1])].copy()
     minor_true_df = score_df.loc[(score_df["ssp_indicator"] == "minor") & (score_df["hybrid_stat_ref" == 1])].copy()
     maj_acc = accuracy_score(major_true_df["hybrid_stat"], major_true_df["preds"])
@@ -84,7 +92,7 @@ def evaluate_major_minor_prediction(pred_vals, labels, mm_vals, score_df, revers
     
     return scores
 
-def score_predictions_A(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=None, reverse_score_prediction=False):
+def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=None, reverse_score_prediction=False):
     h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
     
     scores = {
@@ -96,7 +104,8 @@ def score_predictions_A(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=Non
     }
     
     if mm_vals_aligned:
-        mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, score_df, reversed=reverse_score_prediction)
+        mm_scores = evaluate_major_minor_prediction(score_df)
+        #mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, score_df, reversed=reverse_score_prediction)
         scores.update(mm_scores)
     else:
         print("mm_vals not aligning")
@@ -104,26 +113,7 @@ def score_predictions_A(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=Non
     return scores
 
 
-def get_species_A_scores(pred_filenames, pred_vals, pred_df, solutions):
-    # Get solutions
-    file_list = os.listdir(solutions)
-    print(f"files in {solutions}: {file_list}")
-    # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
-    if "ref_val.csv" in file_list:
-        solution_file = os.path.join(solutions,'ref_val.csv')
-        sol_filenames, sol_gt, mm_vals, sol_df = parse_solution_file_A(solution_file)
-        print("got solutions with 'ref_val.csv'")
-    elif "ref_test.csv" in file_list:
-        solution_file = os.path.join(solutions,'ref_test.csv')
-        sol_filenames, sol_gt, mm_vals, sol_df = parse_solution_file_A(solution_file)
-        print("got solutions with 'ref_test.csv'")
-    elif len(file_list) > 0:
-        solution_file = os.path.join(solutions, file_list[0])
-        sol_filenames, sol_gt, mm_vals, sol_df = parse_solution_file_A(solution_file)
-        print(f"got solutions with {file_list[0]}")
-    else:
-        sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
-
+def get_species_A_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, mm_vals, sol_df):
     # Align predictions with solution via filename
     def align(ref_filenames, ref_vals):
         return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames]
@@ -133,70 +123,22 @@ def get_species_A_scores(pred_filenames, pred_vals, pred_df, solutions):
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
     
     # Get scores
-    scores = score_predictions_A(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned) #, config.reverse_score_prediction)
+    scores = score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned) #, config.reverse_score_prediction)
     print(f"Full Scores Species A hybrid detection: {scores}")
     
     return scores
 
 
-def evaluate_mimic_prediction(scores, labels, filenames, major_cams, minor_cams, reversed=False):
-    
-    preds, gt = evaluate_prediction(scores, labels, reversed=reversed)
-    tmp = list(zip(scores, labels, filenames))
-    tmp = sorted(tmp, key=lambda x: x[0], reverse=reversed)
-    sorted_filenames = np.array(tmp)[:, 2]
-    major_idx = np.isin(np.array(sorted_filenames), major_cams)
-    minor_idx = np.isin(np.array(sorted_filenames), minor_cams)
-    maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
-    min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
-    
-    return maj_acc, min_acc
-
-
-def score_predictions_mimic(pred_vals, sol_gt_aligned, reverse_score_prediction=False):
-    h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
-    
-    scores = {
-        "hybrid_recall" : float(h_recall),
-        "hybrid_precision" : float(h_precision),
-        "f1_score" : float(f1),
-        "roc_auc" : float(roc_auc),
-        "accuracy" : float(acc)
-    }
-        
-    return scores
-
-
-def get_mimic_scores(pred_filenames, pred_vals, pred_df, solutions):
-    # Get solutions
-    file_list = os.listdir(solutions)
-    print(f"files in {solutions}: {file_list}")
-    # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
-    if "ref_val_mimic.csv" in file_list:
-        solution_file = os.path.join(solutions,'ref_val_mimic.csv')
-        sol_filenames, sol_gt, sol_df = parse_solution_file_mimic(solution_file)
-        print("got solutions with 'ref_val_mimic.csv'")
-    elif "ref_test_mimic.csv" in file_list:
-        solution_file = os.path.join(solutions,'ref_test_mimic.csv')
-        sol_filenames, sol_gt, sol_df = parse_solution_file_mimic(solution_file)
-        print("got solutions with 'ref_test_mimic.csv'")
-    elif len(file_list) > 0:
-        solution_file = os.path.join(solutions, file_list[0])
-        sol_filenames, sol_gt, sol_df = parse_solution_file_mimic(solution_file)
-        print(f"got solutions with {file_list[0]}")
-    else:
-        sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
-    
+def get_mimic_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, sol_df):
     # Align predictions with solution via filename
     def align(ref_filenames, ref_vals):
         return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames]
-    sol_filenames, sol_gt
     sol_gt_aligned = align(sol_filenames, sol_gt)
         
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
     
     # Get scores
-    scores = score_predictions_A(pred_vals, sol_gt_aligned, score_df) #, config.reverse_score_prediction)
+    scores = score_predictions(pred_vals, sol_gt_aligned, score_df) #, config.reverse_score_prediction)
     print(f"Full Scores Mimic Hybrid Detection: {scores}")
     
     return scores
@@ -230,8 +172,42 @@ if __name__ == "__main__":
     # Get predictions
     pred_filenames, pred_vals, pred_df = parse_prediction_file(prediction_file)
     
-    A_scores = get_species_A_scores(pred_filenames, pred_vals, pred_df, solutions)
-    mimic_scores = get_mimic_scores(pred_filenames, pred_vals, pred_df, solutions)
+    # Get solutions
+    file_list = os.listdir(solutions)
+    print(f"files in {solutions}: {file_list}")
+    # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
+    if "ref_val.csv" in file_list:
+        solution_file = os.path.join(solutions,'ref_val.csv')
+        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
+        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        print("got solutions with 'ref_val.csv'")
+    elif "ref_test.csv" in file_list:
+        solution_file = os.path.join(solutions,'ref_test.csv')
+        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
+        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        print("got solutions with 'ref_test.csv'")
+    elif len(file_list) > 0:
+        solution_file = os.path.join(solutions, file_list[0])
+        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
+        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        print(f"got solutions with {file_list[0]}")
+    else:
+        sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
+
+    
+    A_scores = get_species_A_scores(pred_filenames=pred_filenames,
+                                    pred_vals=pred_vals,
+                                    pred_df=pred_df,
+                                    sol_filenames=sol_filenames_A,
+                                    sol_gt=sol_gt_A,
+                                    mm_vals=mm_vals,
+                                    sol_df=sol_df_A)
+    mimic_scores = get_mimic_scores(pred_filenames=pred_filenames,
+                                    pred_vals=pred_vals,
+                                    pred_df=pred_df,
+                                    sol_filenames=sol_filenames_mimic,
+                                    sol_gt=sol_gt_mimic,
+                                    sol_df=sol_df_mimic)
     
     # Create ouput directory
     os.makedirs(pathlib.Path(output_dir).parent.resolve(), exist_ok=True)    
