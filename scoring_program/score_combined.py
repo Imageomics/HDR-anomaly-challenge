@@ -14,7 +14,7 @@ HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts
 
 # Importing functions from helper_scripts
 sys.path.append(HELPER_DIRECTORY)
-from dataio import parse_prediction_file, parse_solution_file_A, parse_solution_file_mimic, save_scores
+from dataio import parse_prediction_file, parse_solution_file, save_scores
 
 '''
 # This is for local testing only, along with DEFAULT_CONFIG defined above
@@ -92,7 +92,7 @@ def evaluate_major_minor_prediction(score_df):
     
     return scores
 
-def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=None, reverse_score_prediction=False):
+def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals=False, reverse_score_prediction=False):
     h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
     
     scores = {
@@ -103,43 +103,30 @@ def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=None,
         "accuracy" : float(acc)
     }
     
-    if mm_vals_aligned:
+    if mm_vals:
         mm_scores = evaluate_major_minor_prediction(score_df)
         #mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, score_df, reversed=reverse_score_prediction)
         scores.update(mm_scores)
+        print(f"Full Scores Species A hybrid detection: {scores}")
     else:
-        print("mm_vals not aligning")
+        print(f"Full Scores Mimic hybrid detection: {scores}")
         
     return scores
 
 
-def get_species_A_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, mm_vals, sol_df):
-    # Align predictions with solution via filename
-    def align(ref_filenames, ref_vals):
-        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames if filename in ref_filenames]
-    sol_gt_aligned = align(sol_filenames, sol_gt)
-    mm_vals_aligned = align(sol_filenames, mm_vals)
-    
+def get_scores(pred_df, sol_df, mm_vals = False):
+    # merge ref with predictions
+    # aligns the ref values with scores in the columns based on filenames
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
     
-    # Get scores
-    scores = score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned) #, config.reverse_score_prediction)
-    print(f"Full Scores Species A hybrid detection: {scores}")
+    # Check aligned on all expected files
+    if score_df.shape[0] != sol_df.shape[0]:
+        sys.exit(f"There should have been {sol_df.shape[0]} predictions, but we only got {score_df.shape[0]}")
     
-    return scores
-
-
-def get_mimic_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, sol_df):
-    # Align predictions with solution via filename
-    def align(ref_filenames, ref_vals):
-        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames if filename in ref_filenames]
-    sol_gt_aligned = align(sol_filenames, sol_gt)
-        
-    score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
+    pred_vals = list(score_df["preds"])
+    ref_vals = list(score_df["hybrid_stat"])
     
-    # Get scores
-    scores = score_predictions(pred_vals, sol_gt_aligned, score_df) #, config.reverse_score_prediction)
-    print(f"Full Scores Mimic Hybrid Detection: {scores}")
+    scores = score_predictions(pred_vals, ref_vals, score_df, mm_vals) #, config.reverse_score_prediction)
     
     return scores
 
@@ -170,7 +157,7 @@ if __name__ == "__main__":
         print(prediction_file)
         sys.exit("Couldn't read predictions")
     # Get predictions
-    pred_filenames, pred_vals, pred_df = parse_prediction_file(prediction_file)
+    pred_df = parse_prediction_file(prediction_file)
     
     # Get solutions
     file_list = os.listdir(solutions)
@@ -178,36 +165,22 @@ if __name__ == "__main__":
     # Check if file exists --- should generally be file_list[0], there's a '__MACOSX' showing up from zipping
     if "ref_val.csv" in file_list:
         solution_file = os.path.join(solutions,'ref_val.csv')
-        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
-        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        sol_df_A, sol_df_mimic = parse_solution_file(solution_file)
         print("got solutions with 'ref_val.csv'")
     elif "ref_test.csv" in file_list:
         solution_file = os.path.join(solutions,'ref_test.csv')
-        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
-        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        sol_df_A, sol_df_mimic = parse_solution_file(solution_file)
         print("got solutions with 'ref_test.csv'")
     elif len(file_list) > 0:
         solution_file = os.path.join(solutions, file_list[0])
-        sol_filenames_A, sol_gt_A, mm_vals, sol_df_A = parse_solution_file_A(solution_file)
-        sol_filenames_mimic, sol_gt_mimic, sol_df_mimic = parse_solution_file_mimic(solution_file)
+        sol_df_A, sol_df_mimic = parse_solution_file(solution_file)
         print(f"got solutions with {file_list[0]}")
     else:
         sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
 
     
-    A_scores = get_species_A_scores(pred_filenames=pred_filenames,
-                                    pred_vals=pred_vals,
-                                    pred_df=pred_df,
-                                    sol_filenames=sol_filenames_A,
-                                    sol_gt=sol_gt_A,
-                                    mm_vals=mm_vals,
-                                    sol_df=sol_df_A)
-    mimic_scores = get_mimic_scores(pred_filenames=pred_filenames,
-                                    pred_vals=pred_vals,
-                                    pred_df=pred_df,
-                                    sol_filenames=sol_filenames_mimic,
-                                    sol_gt=sol_gt_mimic,
-                                    sol_df=sol_df_mimic)
+    A_scores = get_scores(pred_df=pred_df, sol_df=sol_df_A, mm_vals = True)
+    mimic_scores = get_scores(pred_df=pred_df, sol_df=sol_df_mimic, mm_vals = False)
     
     # Create ouput directory
     os.makedirs(pathlib.Path(output_dir).parent.resolve(), exist_ok=True)    

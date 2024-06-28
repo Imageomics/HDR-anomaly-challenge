@@ -23,32 +23,20 @@ def parse_delim_separated_text_file_as_columns(path, delim=" "):
 
 def parse_prediction_file(path):
     filenames, pred_vals = parse_delim_separated_text_file_as_columns(path)
-    return filenames, pred_vals, pd.DataFrame({"filename": filenames, "preds": pred_vals})
+    return pd.DataFrame({"filename": filenames, "preds": pred_vals})
 
 
-def parse_solution_file_A(path):
-    df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
-    df = df.loc[df["ssp_indicator"] != "mimic"].copy()
-    filenames = df["filename"].values.tolist()
+def parse_solution_file(path):
     # hybrid stat is the 0-1 indicator
-    gt_vals = list(df["hybrid_stat"])
+    df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
+    # Get mimic dataframe
+    df_mimic = df.loc[df["ssp_indicator"] == "mimic"].copy()
+    
+    # Get Species A DataFrame and process it
+    df_A = df.loc[df["ssp_indicator"] != "mimic"].copy()
     # This assumes that there are only 2 values ("major", "minor")
-    is_major_vals = df["ssp_indicator"].map(lambda x: int(x == "major")).values.tolist() 
-    return filenames, gt_vals, is_major_vals, df
-
-
-def parse_solution_file_mimic(path):
-    df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
-    df = df.loc[df["ssp_indicator"] == "mimic"].copy()
-    filenames = df["filename"].values.tolist()
-    # hybrid stat is the 0-1 indicator
-    gt_vals = list(df["hybrid_stat"])
-    return filenames, gt_vals, df
-
-
-def parse_major_minor_file(path):
-    filenames, major_minor_vals = parse_delim_separated_text_file_as_columns(path)
-    return filenames, major_minor_vals
+    df_A["mm_vals"] = df_A["ssp_indicator"].map(lambda x: int(x == "major")).values.tolist() 
+    return df_A, df_mimic
 
 
 def save_scores(path, A_scores, mimic_scores):
