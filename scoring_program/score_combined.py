@@ -80,8 +80,8 @@ def evaluate_major_minor_prediction(score_df):
     min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
     '''
     # Set to compare just hybrids and look if they're predicted as such
-    major_true_df = score_df.loc[(score_df["ssp_indicator"] == "major") & (score_df["hybrid_stat_ref" == 1])].copy()
-    minor_true_df = score_df.loc[(score_df["ssp_indicator"] == "minor") & (score_df["hybrid_stat_ref" == 1])].copy()
+    major_true_df = score_df.loc[(score_df["ssp_indicator"] == "major") & (score_df["hybrid_stat"] == 1)].copy()
+    minor_true_df = score_df.loc[(score_df["ssp_indicator"] == "minor") & (score_df["hybrid_stat"] == 1)].copy()
     maj_acc = accuracy_score(major_true_df["hybrid_stat"], major_true_df["preds"])
     min_acc = accuracy_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
     scores = {
@@ -116,7 +116,7 @@ def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals_aligned=None,
 def get_species_A_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, mm_vals, sol_df):
     # Align predictions with solution via filename
     def align(ref_filenames, ref_vals):
-        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames]
+        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames if filename in ref_filenames]
     sol_gt_aligned = align(sol_filenames, sol_gt)
     mm_vals_aligned = align(sol_filenames, mm_vals)
     
@@ -132,7 +132,7 @@ def get_species_A_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_
 def get_mimic_scores(pred_filenames, pred_vals, pred_df, sol_filenames, sol_gt, sol_df):
     # Align predictions with solution via filename
     def align(ref_filenames, ref_vals):
-        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames]
+        return [ref_vals[ref_filenames.index(filename)] for filename in pred_filenames if filename in ref_filenames]
     sol_gt_aligned = align(sol_filenames, sol_gt)
         
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
