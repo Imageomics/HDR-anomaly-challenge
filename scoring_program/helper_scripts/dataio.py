@@ -22,7 +22,7 @@ def parse_delim_separated_text_file_as_columns(path, delim=" "):
 
 
 def parse_prediction_file(path):
-    filenames, pred_vals = parse_delim_separated_text_file_as_columns(path)
+    filenames, pred_vals = parse_delim_separated_text_file_as_columns(path, delim=",")
     return pd.DataFrame({"filename": filenames, "preds": pred_vals})
 
 
