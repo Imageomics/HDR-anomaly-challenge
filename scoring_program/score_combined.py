@@ -7,7 +7,7 @@ import pathlib
 import sys
 import numpy as np
 import pandas as pd
-from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score, accuracy_score
+from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score, roc_auc_score, accuracy_score
 
 # Constants
 HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts")
@@ -26,9 +26,27 @@ def get_config():
     return parse_yaml_file(config_path)
 '''
 
-def evaluate_prediction(scores, labels, reversed=False):
+# def evaluate_prediction(score_df):
+#     score_df["preds"], score_df["hybrid_stat"]
+
+#     score_df['threshold_preds'] = score_df
+
+#     threshold_preds = None
+#     for i in range(combined.shape[0] + 1):
+#         ls = len(combined[:i])
+#         rs = len(combined[i:])
+#         preds = np.concatenate((np.zeros(ls), np.ones(rs)))
+#         recall = recall_score(combined[:, 1], preds, pos_label=0)
+#         if recall >= 0.95:
+#             threshold_i = i
+#             threshold_preds = preds
+#             break
+    
+#     return threshold_preds, combined[:, 1]
+
+def evaluate_prediction(scores, labels):
     combined = list(zip(scores, labels))
-    combined = sorted(combined, key=lambda x: x[0], reverse=reversed)
+    # combined = sorted(combined, key=lambda x: x[0], reverse=reversed)
     combined = np.array(combined).astype(np.float32)
     threshold_i = None
     threshold_preds = None
@@ -44,63 +62,74 @@ def evaluate_prediction(scores, labels, reversed=False):
     
     return threshold_preds, combined[:, 1]
 
-def evaluate(scores, labels, reversed=False):
-    """Requires lower score to mean more likely to be non-hybrid,
-    and higher score to mean more likely to be hybrid.
+# def evaluate(preds, gt):
+#     """Requires lower score to mean more likely to be non-hybrid,
+#     and higher score to mean more likely to be hybrid.
     
-    If you would like this to be reversed, set reversed=True
-    """
-    
-    preds, gt = evaluate_prediction(scores, labels, reversed)
-    h_recall = recall_score(gt, preds, pos_label=1)
-    h_precision = precision_score(gt, preds, pos_label=1)
-    f1 = f1_score(gt, preds, pos_label=1)
-    roc_auc = roc_auc_score(gt, preds)
-    acc = accuracy_score(gt, preds)
+#     If you would like this to be reversed, set reversed=True
+#     """
+#     h_recall = recall_score(gt, preds, pos_label=1)
+#     h_precision = precision_score(gt, preds, pos_label=1)
+#     f1 = f1_score(gt, preds, pos_label=1)
+#     roc_auc = roc_auc_score(gt, preds)
+#     acc = accuracy_score(gt, preds)
 
-    return h_recall, h_precision, f1, roc_auc, acc
+#     return h_recall, h_precision, f1, roc_auc, acc
 
 def evaluate_major_minor_prediction(score_df):
-    #evaluate_major_minor_prediction(pred_vals, labels, mm_vals, score_df, reversed=False):
-    # TODO: the logic here sorts the preds and lables for evaluation
-    # Then we sort again in order to align the mm_vals...
-    # While likely correct here, there's probably a lot of redundancy
-    # that could be cleaned up.
     print("Evaluating performance on signal vs non-signal hybrids")
-    '''
-    preds, gt = evaluate_prediction(pred_vals, labels, reversed=reversed)
-    tmp = list(zip(pred_vals, labels, mm_vals))
-    tmp = sorted(tmp, key=lambda x: x[0], reverse=reversed)
-    sorted_mm_vals = np.array(tmp)[:, 2]
-    # We are only looking at major and minor subspecies and nothing else, 
-    # so there are only two options.
-    major_idx = np.nonzero((sorted_mm_vals  == '1') & (gt == 1))
-    minor_idx = np.nonzero((sorted_mm_vals == '0') & (gt == 1))
-    maj_acc = accuracy_score(gt[major_idx], preds[major_idx])
-    min_acc = accuracy_score(gt[minor_idx], preds[minor_idx])
-    '''
     # Set to compare just hybrids and look if they're predicted as such
     major_true_df = score_df.loc[(score_df["ssp_indicator"] == "major") & (score_df["hybrid_stat"] == 1)].copy()
     minor_true_df = score_df.loc[(score_df["ssp_indicator"] == "minor") & (score_df["hybrid_stat"] == 1)].copy()
-    maj_acc = accuracy_score(major_true_df["hybrid_stat"], major_true_df["preds"])
-    min_acc = accuracy_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
+
+    major_recall = recall_score(major_true_df["hybrid_stat"], major_true_df["converted_preds"])
+    minor_recall = recall_score(minor_true_df["hybrid_stat"], minor_true_df["converted_preds"])
+
+    major_true_df = score_df.loc[score_df["ssp_indicator"] == "major"].copy()
+    minor_true_df = score_df.loc[score_df["ssp_indicator"] == "minor"].copy()
+
+    major_roc_auc = roc_auc_score(major_true_df["hybrid_stat"], major_true_df["preds"])
+    minor_roc_auc = roc_auc_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
+
+    major_prc_auc = average_precision_score(major_true_df["hybrid_stat"], major_true_df["preds"])
+    minor_prc_auc = average_precision_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
+    
     scores = {
-        "major_recall" : maj_acc,
-        "minor_recall" : min_acc
+        "major_recall" : major_recall,
+        "minor_recall" : minor_recall,
+        "major_prc_auc" : major_prc_auc,
+        "minor_prc_auc" : minor_prc_auc,
+        "major_roc_auc" : major_roc_auc,
+        "minor_roc_auc" : minor_roc_auc,
     }
-    print("signal, non-signal hybrid detection scores: ", scores)
+    # print("signal, non-signal hybrid detection scores: ", scores)
     
     return scores
 
-def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals=False, reverse_score_prediction=False):
-    h_recall, h_precision, f1, roc_auc, acc = evaluate(pred_vals, sol_gt_aligned, reversed=reverse_score_prediction)
+def score_predictions(score_df, mm_vals=False):
+
+    preds, gt = evaluate_prediction(score_df["preds"], score_df["hybrid_stat"])
+
+    # preds, gt = evaluate_prediction(score_df)
+
+    score_df['converted_preds'] = preds
+
+    h_recall = recall_score(gt, preds, pos_label=1)
+    h_precision = precision_score(gt, preds, pos_label=1)
+    f1 = f1_score(gt, preds, pos_label=1)
+    acc = accuracy_score(gt, preds)
+    prc_auc = average_precision_score(gt, score_df["preds"], pos_label=1) #better when imbalanced class, focus on positive rare; average_precision_score approximates the AUC by a sum over the precisions at every possible threshold value, better than Trapezoidal Rule when the curve has significant non-linearities
+    roc_auc = roc_auc_score(gt, score_df["preds"])
+    
+    # h_recall, h_precision, f1, roc_auc, acc = evaluate(preds, gt)
     
     scores = {
         "hybrid_recall" : float(h_recall),
         "hybrid_precision" : float(h_precision),
         "f1_score" : float(f1),
-        "roc_auc" : float(roc_auc),
-        "accuracy" : float(acc)
+        "accuracy" : float(acc),
+        "prc_auc" : float(prc_auc),
+        "roc_auc" : float(roc_auc)
     }
     
     if mm_vals:
@@ -114,19 +143,17 @@ def score_predictions(pred_vals, sol_gt_aligned, score_df, mm_vals=False, revers
     return scores
 
 
-def get_scores(pred_df, sol_df, mm_vals = False):
+def get_scores(pred_df=None, sol_df=None, mm_vals = False):
     # merge ref with predictions
     # aligns the ref values with scores in the columns based on filenames
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
+    score_df = score_df.sort_values(by='preds')
     
     # Check aligned on all expected files
     if score_df.shape[0] != sol_df.shape[0]:
         sys.exit(f"There should have been {sol_df.shape[0]} predictions, but we only got {score_df.shape[0]}")
     
-    pred_vals = list(score_df["preds"])
-    ref_vals = list(score_df["hybrid_stat"])
-    
-    scores = score_predictions(pred_vals, ref_vals, score_df, mm_vals) #, config.reverse_score_prediction)
+    scores = score_predictions(score_df, mm_vals) #, config.reverse_score_prediction)
     
     return scores
 
@@ -180,7 +207,9 @@ if __name__ == "__main__":
 
     
     A_scores = get_scores(pred_df=pred_df, sol_df=sol_df_A, mm_vals = True)
+    
     mimic_scores = get_scores(pred_df=pred_df, sol_df=sol_df_mimic, mm_vals = False)
+    #missing values in mimic_scores; There should have been 1095 predictions, but we only got 1069
     
     # Create ouput directory
     os.makedirs(pathlib.Path(output_dir).parent.resolve(), exist_ok=True)    

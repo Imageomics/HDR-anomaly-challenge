@@ -87,9 +87,9 @@ if __name__ == "__main__":
             score = submit_model.predict(datapoint)
 
             if idx ==  num_of_datapoint - 1:
-                f.write(filename + " " + str(round(score, 4)))
+                f.write(filename + "," + str(round(score, 4)))
             else:
-                f.write(filename + " " + str(round(score, 4)) + '\n')
+                f.write(filename + "," + str(round(score, 4)) + '\n')
         end = time.time()
         elapsed = time.strftime("%H:%M:%S", time.gmtime(end - start))
 
