@@ -12,7 +12,7 @@ conda create --name [name] python=3.10
 conda activate [name]
 
 3. put the script under git repo, edit and run the script
-chomnd +x run.sh
+chmod +x run.sh
 ./run.sh
 END_COMMENT
 
