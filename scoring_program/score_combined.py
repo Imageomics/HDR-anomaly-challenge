@@ -44,23 +44,34 @@ def get_config():
     
 #     return threshold_preds, combined[:, 1]
 
-def evaluate_prediction(scores, labels):
-    combined = list(zip(scores, labels))
-    # combined = sorted(combined, key=lambda x: x[0], reverse=reversed)
-    combined = np.array(combined).astype(np.float32)
-    threshold_i = None
-    threshold_preds = None
-    for i in range(combined.shape[0] + 1):
-        ls = len(combined[:i])
-        rs = len(combined[i:])
-        preds = np.concatenate((np.zeros(ls), np.ones(rs)))
-        recall = recall_score(combined[:, 1], preds, pos_label=0)
-        if recall >= 0.95:
-            threshold_i = i
-            threshold_preds = preds
+def evaluate_prediction(score_df):
+    # loop predictions from most likely non-hybrid to most likeyly hybrid
+    for threshold_pred in sorted(set(score_df["preds"])):
+        score_df['converted_preds'] = score_df["preds"].apply(lambda x: 1 if x > threshold_pred else 0)
+        threshold_recall = recall_score(score_df["hybrid_stat"], score_df["converted_preds"], pos_label=0)  # non-hybrid is the positive here, so positive label is 0
+        if threshold_recall >= 0.95:
             break
     
-    return threshold_preds, combined[:, 1]
+    print(f'With non-hybrid recall {str(round(threshold_recall, 4))}, the predictions equal and lower than the threshold confident score {str(threshold_pred)} are all non-hybrids and the ones higher are all hyrids.')
+
+    return score_df, threshold_recall, threshold_pred
+
+    # combined = list(zip(scores, labels))
+    # # combined = sorted(combined, key=lambda x: x[0], reverse=reversed)
+    # combined = np.array(combined).astype(np.float32)
+    # threshold_i = None
+    # threshold_preds = None
+    # for i in range(combined.shape[0] + 1):
+    #     ls = len(combined[:i])
+    #     rs = len(combined[i:])
+    #     preds = np.concatenate((np.zeros(ls), np.ones(rs)))
+    #     recall = recall_score(combined[:, 1], preds, pos_label=0)
+    #     if recall >= 0.95:
+    #         threshold_i = i
+    #         threshold_preds = preds
+    #         break
+    
+    # return threshold_preds, combined[:, 1]
 
 # def evaluate(preds, gt):
 #     """Requires lower score to mean more likely to be non-hybrid,
@@ -107,13 +118,15 @@ def evaluate_major_minor_prediction(score_df):
     return scores
 
 def score_predictions(score_df, mm_vals=False):
+    
+    # preds, gt = evaluate_prediction(score_df["preds"], score_df["hybrid_stat"])
+    # score_df['converted_preds'] = preds
 
-    preds, gt = evaluate_prediction(score_df["preds"], score_df["hybrid_stat"])
+    score_df, threshold_recall, threshold_pred = evaluate_prediction(score_df)
+    gt = score_df["hybrid_stat"]
+    preds = score_df["converted_preds"]
 
-    # preds, gt = evaluate_prediction(score_df)
-
-    score_df['converted_preds'] = preds
-
+    # metrics for hybrids, hybrids are positive here
     h_recall = recall_score(gt, preds, pos_label=1)
     h_precision = precision_score(gt, preds, pos_label=1)
     f1 = f1_score(gt, preds, pos_label=1)
@@ -124,6 +137,8 @@ def score_predictions(score_df, mm_vals=False):
     # h_recall, h_precision, f1, roc_auc, acc = evaluate(preds, gt)
     
     scores = {
+        "threshold_recall" : float(round(threshold_recall, 4)),
+        "threshold_pred" : float(threshold_pred),
         "hybrid_recall" : float(h_recall),
         "hybrid_precision" : float(h_precision),
         "f1_score" : float(f1),
@@ -147,7 +162,7 @@ def get_scores(pred_df=None, sol_df=None, mm_vals = False):
     # merge ref with predictions
     # aligns the ref values with scores in the columns based on filenames
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
-    score_df = score_df.sort_values(by='preds')
+    # score_df = score_df.sort_values(by='preds')
     
     # Check aligned on all expected files
     if score_df.shape[0] != sol_df.shape[0]:
@@ -206,10 +221,9 @@ if __name__ == "__main__":
         sys.exit(f"Couldn't find solution file, have {len(file_list)} files in {solutions}")
 
     
-    A_scores = get_scores(pred_df=pred_df, sol_df=sol_df_A, mm_vals = True)
-    
     mimic_scores = get_scores(pred_df=pred_df, sol_df=sol_df_mimic, mm_vals = False)
-    #missing values in mimic_scores; There should have been 1095 predictions, but we only got 1069
+    
+    A_scores = get_scores(pred_df=pred_df, sol_df=sol_df_A, mm_vals = True)
     
     # Create ouput directory
     os.makedirs(pathlib.Path(output_dir).parent.resolve(), exist_ok=True)    

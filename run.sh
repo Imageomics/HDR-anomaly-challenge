@@ -41,7 +41,7 @@ export output_dir="sample_result_submission/$task_folder/res"
 export program_dir="ingestion_program"
 # export submission_dir="baselines/DINO_SGD_code_submission"
 export submission_dir="baselines/BioCLIP_code_submission"
-# python ingestion_program/ingestion.py $input_dir $output_dir $program_dir $submission_dir
+python ingestion_program/ingestion.py $input_dir $output_dir $program_dir $submission_dir
 
 ## score the predictions
 export input_dir="sample_result_submission/$task_folder"
