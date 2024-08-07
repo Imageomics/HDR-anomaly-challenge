@@ -5,44 +5,26 @@
 import os
 import pathlib
 import sys
+import json
 import numpy as np
 import pandas as pd
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score, roc_auc_score, accuracy_score
 
 # Constants
-HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts")
+# HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts")
 
 # Importing functions from helper_scripts
-sys.path.append(HELPER_DIRECTORY)
-from dataio import parse_prediction_file, parse_solution_file, save_scores
+# sys.path.append(HELPER_DIRECTORY)
 
-'''
-# This is for local testing only, along with DEFAULT_CONFIG defined above
-def get_config():
-    config_path = DEFAULT_CONFIG
-    if len(sys.argv) > 1:
-        config_path = sys.argv[1]
-        
-    return parse_yaml_file(config_path)
-'''
+def parse_solution_file(path):
+    # hybrid stat is the 0-1 indicator
+    df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
+    # Get mimic dataframe
+    df_mimic = df.loc[df["ssp_indicator"] == "mimic"].copy()    
+    # Get Species A DataFrame and process it
+    df_A = df.loc[df["ssp_indicator"] != "mimic"].copy()
 
-# def evaluate_prediction(score_df):
-#     score_df["preds"], score_df["hybrid_stat"]
-
-#     score_df['threshold_preds'] = score_df
-
-#     threshold_preds = None
-#     for i in range(combined.shape[0] + 1):
-#         ls = len(combined[:i])
-#         rs = len(combined[i:])
-#         preds = np.concatenate((np.zeros(ls), np.ones(rs)))
-#         recall = recall_score(combined[:, 1], preds, pos_label=0)
-#         if recall >= 0.95:
-#             threshold_i = i
-#             threshold_preds = preds
-#             break
-    
-#     return threshold_preds, combined[:, 1]
+    return df_A, df_mimic
 
 def evaluate_prediction(score_df):
     # loop predictions from most likely non-hybrid to most likeyly hybrid
@@ -56,36 +38,6 @@ def evaluate_prediction(score_df):
 
     return score_df, threshold_recall, threshold_pred
 
-    # combined = list(zip(scores, labels))
-    # # combined = sorted(combined, key=lambda x: x[0], reverse=reversed)
-    # combined = np.array(combined).astype(np.float32)
-    # threshold_i = None
-    # threshold_preds = None
-    # for i in range(combined.shape[0] + 1):
-    #     ls = len(combined[:i])
-    #     rs = len(combined[i:])
-    #     preds = np.concatenate((np.zeros(ls), np.ones(rs)))
-    #     recall = recall_score(combined[:, 1], preds, pos_label=0)
-    #     if recall >= 0.95:
-    #         threshold_i = i
-    #         threshold_preds = preds
-    #         break
-    
-    # return threshold_preds, combined[:, 1]
-
-# def evaluate(preds, gt):
-#     """Requires lower score to mean more likely to be non-hybrid,
-#     and higher score to mean more likely to be hybrid.
-    
-#     If you would like this to be reversed, set reversed=True
-#     """
-#     h_recall = recall_score(gt, preds, pos_label=1)
-#     h_precision = precision_score(gt, preds, pos_label=1)
-#     f1 = f1_score(gt, preds, pos_label=1)
-#     roc_auc = roc_auc_score(gt, preds)
-#     acc = accuracy_score(gt, preds)
-
-#     return h_recall, h_precision, f1, roc_auc, acc
 
 def evaluate_major_minor_prediction(score_df):
     print("Evaluating performance on signal vs non-signal hybrids")
@@ -113,14 +65,10 @@ def evaluate_major_minor_prediction(score_df):
         "major_roc_auc" : major_roc_auc,
         "minor_roc_auc" : minor_roc_auc,
     }
-    # print("signal, non-signal hybrid detection scores: ", scores)
     
     return scores
 
 def score_predictions(score_df, mm_vals=False):
-    
-    # preds, gt = evaluate_prediction(score_df["preds"], score_df["hybrid_stat"])
-    # score_df['converted_preds'] = preds
 
     score_df, threshold_recall, threshold_pred = evaluate_prediction(score_df)
     gt = score_df["hybrid_stat"]
@@ -133,9 +81,7 @@ def score_predictions(score_df, mm_vals=False):
     acc = accuracy_score(gt, preds)
     prc_auc = average_precision_score(gt, score_df["preds"], pos_label=1) #better when imbalanced class, focus on positive rare; average_precision_score approximates the AUC by a sum over the precisions at every possible threshold value, better than Trapezoidal Rule when the curve has significant non-linearities
     roc_auc = roc_auc_score(gt, score_df["preds"])
-    
-    # h_recall, h_precision, f1, roc_auc, acc = evaluate(preds, gt)
-    
+        
     scores = {
         "threshold_recall" : float(round(threshold_recall, 4)),
         "threshold_pred" : float(threshold_pred),
@@ -149,7 +95,6 @@ def score_predictions(score_df, mm_vals=False):
     
     if mm_vals:
         mm_scores = evaluate_major_minor_prediction(score_df)
-        #mm_scores = evaluate_major_minor_prediction(pred_vals, sol_gt_aligned, mm_vals_aligned, score_df, reversed=reverse_score_prediction)
         scores.update(mm_scores)
         print(f"Full Scores Species A hybrid detection: {scores}")
     else:
@@ -162,7 +107,6 @@ def get_scores(pred_df=None, sol_df=None, mm_vals = False):
     # merge ref with predictions
     # aligns the ref values with scores in the columns based on filenames
     score_df = pd.merge(sol_df, pred_df, on = "filename", how = "inner")
-    # score_df = score_df.sort_values(by='preds')
     
     # Check aligned on all expected files
     if score_df.shape[0] != sol_df.shape[0]:
@@ -172,10 +116,21 @@ def get_scores(pred_df=None, sol_df=None, mm_vals = False):
     
     return scores
 
+def save_scores(path, A_scores, mimic_scores):
+    score_record = {
+        "A_score_major_recall": A_scores["major_recall"],
+        "A_score_minor_recall": A_scores["minor_recall"],
+        "A_PRC_AUC": A_scores["prc_auc"],
+        "A_PRC_AUC_major": A_scores["major_prc_auc"],
+        "A_PRC_AUC_minor": A_scores["minor_prc_auc"],
+        "mimic_recall": mimic_scores["hybrid_recall"],
+        "mimic_PRC_AUC": mimic_scores["prc_auc"]
+    }
+    print(f"Defined score record for leaderboard {score_record}")
+    with open(path, "w") as f:
+        f.write(json.dumps(score_record))
 
 if __name__ == "__main__":
-    # Get scoring configurations -- for local testing
-    #config = get_config()
     
     # Directory to read labels from
     input_dir = sys.argv[1]
@@ -199,7 +154,7 @@ if __name__ == "__main__":
         print(prediction_file)
         sys.exit("Couldn't read predictions")
     # Get predictions
-    pred_df = parse_prediction_file(prediction_file)
+    pred_df = pd.read_csv(prediction_file, header=None, names=['filename','preds'])
     
     # Get solutions
     file_list = os.listdir(solutions)
