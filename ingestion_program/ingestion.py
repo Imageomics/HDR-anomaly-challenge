@@ -26,9 +26,43 @@
 
 # ===== Begin Imageomics modifications =====
 import os
-from sys import argv, path, executable
+import re
+from sys import argv, path, executable, exit
 import subprocess
 import time
+
+
+# expected version pattern for requirements
+VERSION_PATTERN = re.compile("^[0-9].[0-9].[0-9]$")
+
+
+def install_from_whitelist(req_file):
+
+    whitelist = open("/app/program/whitelist.txt", 'r').readlines()
+    whitelist = [i.rstrip('\n') for i in whitelist]
+    # print(whitelist)
+
+    for package in open(req_file, 'r').readlines():
+        package = package.rstrip('\n')
+        package_version = package.split("==")
+        if len(package_version) > 2:
+            # invalid format, don't use
+            print(f"requested package {package} has invalid format, will install latest version (of {package_version[0]}) if allowed")
+            package = package_version[0]
+        elif len(package_version) == 2:
+            version = package_version[1]
+            if not VERSION_PATTERN.match(version):
+                # invalid format of version, don't use
+                print(f"requested package {package} has invalid version, will install latest version (of {package_version[0]}) if allowed")
+                package = package_version[0]
+        #print("accepted package name: ", package)
+        #print("package name ", package_version[0])
+        if package_version[0] in whitelist:
+            # package must be in whitelist, so format check unnecessary
+            subprocess.check_call([executable, "-m", "pip", "install", package])
+            print(f"{package_version[0]} installed")
+        else:
+            exit(f"{package_version[0]} is not an allowed package. Please contact the organizers on GitHub to request acceptance of the package.")
 
 
 if __name__ == "__main__":
@@ -49,14 +83,16 @@ if __name__ == "__main__":
     path.append(submission_dir) # In order to access libraries of the user
 
     start = time.time()
-    if os.path.isfile(os.path.join(submission_dir, "requirements.txt")):
-        subprocess.check_call([executable, "-m", "pip", "install", "-r", os.path.join(submission_dir, "requirements.txt")])
+    requirements_file = os.path.join(submission_dir, "requirements.txt")
+    if os.path.isfile(requirements_file):
+        install_from_whitelist(requirements_file)
     end = time.time()
 
     elapsed = time.strftime("%H:%M:%S", time.gmtime(end - start))
 
     print(f"pip handling packages takes {elapsed}.")
 
+    # Import remaining packages
     from PIL import Image
     from tqdm import tqdm
     from model import Model
@@ -65,7 +101,6 @@ if __name__ == "__main__":
     print("model imported")
     submit_model = Model()
     submit_model.load()
-
 
 
     img_list = os.listdir(input_dir)
@@ -95,6 +130,4 @@ if __name__ == "__main__":
 
         print(f"model inference takes {elapsed}.")
 
-        print(f"we looped {idx} times")
-        
-        
+        print(f"we looped {idx} times")       
