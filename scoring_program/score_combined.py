@@ -11,17 +11,15 @@ import pandas as pd
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score, roc_auc_score, accuracy_score
 
 # Constants
-# HELPER_DIRECTORY = str(pathlib.Path(__file__).parent.resolve() / "helper_scripts")
 
 # Importing functions from helper_scripts
-# sys.path.append(HELPER_DIRECTORY)
 
 def parse_solution_file(path):
     # hybrid stat is the 0-1 indicator
     df = pd.read_csv(path, dtype = {"hybrid_stat": np.int32})
     # Get mimic dataframe
     df_mimic = df.loc[df["ssp_indicator"] == "mimic"].copy()    
-    # Get Species A DataFrame and process it
+    # Get Species A DataFrame
     df_A = df.loc[df["ssp_indicator"] != "mimic"].copy()
 
     return df_A, df_mimic
