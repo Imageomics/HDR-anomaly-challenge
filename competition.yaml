@@ -84,42 +84,48 @@ leaderboards:
   key: detection-results
   submission_rule: "Add_And_Delete"
   columns:
-  - title: Signal Hybrids
-    key: A_score_major
+  - title: Signal Hybrid Recall
+    key: A_score_major_recall
     index: 0
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Non-Signal Hybrids
-    key: A_score_minor
+  - title: Non-Signal Hybrid Recall
+    key: A_score_minor_recall
     index: 1
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: AUC Species A Hybrids
-    key: A_AUC
+  - title: PRC AUC Species A Signal Hybrids
+    key: A_PRC_AUC_major
     index: 2
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: Mimic Hybrids
-    key: mimic_score
+  - title: PRC AUC Species A Non-Signal Hybrids
+    key: A_PRC_AUC_minor
     index: 3
     sorting: desc
     computation: null
     computation_indexes: null
-  - title: AUC Mimic Hybrids
-    key: mimic_AUC
+  - title: Mimic Hybrid Recall
+    key: mimic_recall
     index: 4
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: PRC AUC Mimic Hybrids
+    key: mimic_PRC_AUC
+    index: 5
     sorting: desc
     computation: null
     computation_indexes: null
   - title: Challenge Score  # Removed Duration
     key: challenge_score
-    index: 5
+    index: 6
     sorting: desc
     computation: min   # Could we make our own from the scoring program or must it consider the other columns somehow?
     computation_indexes: # Take scores on Species A and Mimic hybrid detection?
       - 0
       - 1
-      - 3
+      - 4
