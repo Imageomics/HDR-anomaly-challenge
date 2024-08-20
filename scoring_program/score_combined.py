@@ -40,20 +40,17 @@ def evaluate_prediction(score_df):
 def evaluate_major_minor_prediction(score_df):
     print("Evaluating performance on signal vs non-signal hybrids")
     # Set to compare just hybrids and look if they're predicted as such
-    major_true_df = score_df.loc[(score_df["ssp_indicator"] == "major") & (score_df["hybrid_stat"] == 1)].copy()
-    minor_true_df = score_df.loc[(score_df["ssp_indicator"] == "minor") & (score_df["hybrid_stat"] == 1)].copy()
+    major_df = score_df.loc[score_df["ssp_indicator"] == "major"].copy()
+    minor_df = score_df.loc[score_df["ssp_indicator"] == "minor"].copy()
 
-    major_recall = recall_score(major_true_df["hybrid_stat"], major_true_df["converted_preds"])
-    minor_recall = recall_score(minor_true_df["hybrid_stat"], minor_true_df["converted_preds"])
+    major_recall = recall_score(major_df["hybrid_stat"], major_df["converted_preds"])
+    minor_recall = recall_score(minor_df["hybrid_stat"], minor_df["converted_preds"])
 
-    major_true_df = score_df.loc[score_df["ssp_indicator"] == "major"].copy()
-    minor_true_df = score_df.loc[score_df["ssp_indicator"] == "minor"].copy()
+    major_roc_auc = roc_auc_score(major_df["hybrid_stat"], major_df["preds"])
+    minor_roc_auc = roc_auc_score(minor_df["hybrid_stat"], minor_df["preds"])
 
-    major_roc_auc = roc_auc_score(major_true_df["hybrid_stat"], major_true_df["preds"])
-    minor_roc_auc = roc_auc_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
-
-    major_prc_auc = average_precision_score(major_true_df["hybrid_stat"], major_true_df["preds"])
-    minor_prc_auc = average_precision_score(minor_true_df["hybrid_stat"], minor_true_df["preds"])
+    major_prc_auc = average_precision_score(major_df["hybrid_stat"], major_df["preds"])
+    minor_prc_auc = average_precision_score(minor_df["hybrid_stat"], minor_df["preds"])
     
     scores = {
         "major_recall" : major_recall,
