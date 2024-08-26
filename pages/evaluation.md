@@ -1,35 +1,47 @@
 # Butterfly Hybrid Detection: Evaluation
-This challenge is an anomaly detection problem. The goal is to find hybrid butterfly instances.
+This challenge is an anomaly detection problem. The goal is to find hybrid butterfly instances. There are two sets of images considered in the test set, as described below.
 
-Specifically, the test data comprise:
-- A collection butterfly species' (denoted as Species A) subspecies. Participants can treat these subspecies as different object classes.
-- Hybrids of these subspecies: these cases are produced by parents from different subspecies. Participants can treat hybrids with different combinations of parent subspecies as different object classes. We call the hybrid which is most common in the dataset the "signal" hybrid; it is the only hybrid provided for training.
-- The goal of the challenge is to distinguish between non-hybrid instances and hybrid instances.
+## The First Component of the Test Dataset
+This test data set comprises:
+- An image collection of butterfly **Species A subspecies**. These are non-hybrid instances.
+- An image collection of **Species A hybrids**, reproduced by parents from different Species A subspecies. We note that in the training data, we only provide one type of hybrid (the "signal" hybrid), reproduced by one specific combination of parents. In the test data, there are "non-signal" hybrids produced by other combinations of parents as well. 
 
-Moreover, Species A has a mimic (or co-mimic) Species B. These two butterfly species have quite similar appearances to evade predators. The test data thus further contains:
-- A mimic butterfly species' (denoted as Species B) subspecies. Specifically, we only consider the two subspecies that correspond to the parent subspecies of Species A's signal hybrid.
-- Hybrids of these two subspecies.
-- The aim of this test set is to see whether an anomaly detection algorithm for butterflies is transferrable across mimic butterflies.
+The goal of the challenge is to distinguish between non-hybrid instances and hybrid instances.
 
-There are 2 phases:
+## The Second Component of the Test Dataset
+Moreover, Species A has a mimic Species B. These two butterfly species have quite similar appearances to evade predators. Specifically, for the two subspecies of Species A that produce the signal hybrid, there are mimic subspecies of Species B which also hybridize. We thus provide a separate, second test data set that contains:
+- An image collection of butterfly **Species B subspecies**. These are non-hybrid instances.
+- An image collection of **Species B hybrids**, reproduced by parents from different Species B subspecies. 
+
+Specifically, we only consider one particular hybrid and two specific parent subspecies of Species B, corresponding to Species A signal hybrid and its two parent subspecies. 
+
+This second test set aims to investigate whether an anomaly detection algorithm for butterfly Species A is transferrable to the mimic butterfly Species B.
+
+## Evaluation Phases
+There are 2 phases. Each test data set is split into a development set and a final test set.  
 1. **Development phase:**
-	* The provided training data contains 1) images of all Species A's subspecies: these are considered normal (not anomaly) cases; 2) a signal set comprising the "signal" hybrid (anomaly) cases: the most common hybrids of Species A's subspecies in _this_ dataset.
-	* The goal is to develop an algorithm to 1) detect hybrid butterflies of Species A's subspecies among their parent subspecies, and 2) detect the "signal" hybrid butterfly of a mimic Species (Species B) among its two parent subspecies.
-	* Upload your model; feedback will be provided on the development set for each component until the end of the challenge:
-		1. Signal and non-signal hybrid subspecies of Species A. 
-		2. Signal hybrid subspecies of a mimic Species B.
-	* Participants may submit _one_ score on the "development" sets to be displayed on the leaderboard. This score can be removed and replaced with a newer or better score as they choose.
+	* The provided training data contains:
+		- Images of all Species A subspecies: these images are considered normal (not anomaly) cases.
+		- A signal set comprising the signal, most common hybrid: these images are considered anomaly cases.*
+	* The goal is to develop an algorithm to detect hybrid instances.
+	* Upload your model: feedback will be provided on the development set until the end of the challenge:
+		1. Detect signal and non-signal hybrid subspecies of Species A. 
+		2. Detect signal hybrid subspecies of the mimic Species B.
+	* Participants may submit _one_ score on the development sets to be displayed on the leaderboard. This score can be removed and replaced with a newer or better score as they choose.
 2. **Final phase:**
-	* Automatic at the end of the challenge. Be sure to submit your preferred algorithm as a final submission prior to the end of the challenge, as this will be the model run on the test data for final scores.
-	* Each participant's added submission will be evaluated on the final test sets and scores will be posted to the leaderboard. 
+	* This phase will start automatically at the end of the challenge.
+ 	* Be sure to submit your preferred algorithm as a final submission before the end of the challenge, as this will be the model run on the test data for final scores.
+	* Each participant's last submission will be evaluated on the final test set and scores will be posted to the leaderboard. 
 
-Evaluation metric:
+## Evaluation metric
 
-This competition allows you to submit your developed algorithm, which will be run on the development and test datasets through CodaBench.
+This competition allows you to submit your developed algorithm, which will be run on the development and the final test dataset through CodaBench.
 
 Your algorithm needs to generate an anomaly score for each input image: the higher the score is, the more likely the input image is an anomaly (i.e., hybrid).
 
 The submissions are evaluated based on two metrics:
+- The true positive rate (TPR) at the true negative rate (TNR) = 95%: the recall of hybrid cases, with a score threshold set to recognizing non-hybrid cases with 95% accuracy.
+- PRC AUC
 
-1. The true positive rate (TPR) at the true negative rate (TNR) = 95%: the recall of hybrid cases, with a score threshold set to recognizing non-hybrid cases with 95% accuracy.
-2. AUROC
+
+* Note that these hybrids are just the most common within this particular dataset, not necessarily in general.
