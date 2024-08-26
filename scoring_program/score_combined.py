@@ -8,6 +8,7 @@ import sys
 import json
 import numpy as np
 import pandas as pd
+from statistics import harmonic_mean
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score, roc_auc_score, accuracy_score
 
 # Constants
@@ -119,7 +120,8 @@ def save_scores(path, A_scores, mimic_scores):
         "A_PRC_AUC_major": A_scores["major_prc_auc"],
         "A_PRC_AUC_minor": A_scores["minor_prc_auc"],
         "mimic_recall": mimic_scores["hybrid_recall"],
-        "mimic_PRC_AUC": mimic_scores["prc_auc"]
+        "mimic_PRC_AUC": mimic_scores["prc_auc"],
+        "challenge_score": harmonic_mean([A_scores["major_recall"], A_scores["minor_recall"], mimic_scores["hybrid_recall"]])
     }
     print(f"Defined score record for leaderboard {score_record}")
     with open(path, "w") as f:
