@@ -44,4 +44,4 @@ The submissions are evaluated based on two metrics:
 - PRC AUC
 
 
-* Note that these hybrids are just the most common within this particular dataset, not necessarily in general.
+\*  Note that these hybrids are just the most common within this particular dataset, not necessarily in general.
