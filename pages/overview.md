@@ -16,7 +16,8 @@ On a different dimension, two different butterfly species with overlapping habit
 
 Besides the goal to develop an anomaly detection algorithm to distinguish between hybrids and non-hybrids for one species, this challenge aims to investigate whether such an algorithm is generalizable to the other visually mimicking species. 
 
-![Alt text](https://github.com/Imageomics/HDR-anomaly-challenge/blob/description_edit/pages/HDR_fig.png)
+![subspecies_to_hybrids comparison different subspecies of Species A compared to two of its mimics](https://github.com/user-attachments/assets/8647e1f5-4f99-48c6-8325-fdfd0e5d4c21)
+
 
 ## Setup Overview
 This challenge is designed to simulate a real-world biological scenario. Suppose a biologist studies a particular butterfly Species A. One day, the biologist finds that a subset of the images collected looks slightly abnormal in their visual appearance. After investigation, the biologist finds that these abnormal samples are hybrids produced by different subspecies of Species A, which are rarely observed. Since in theory, there are quadratically many possibilities of hybrids and the current collection only covers a small subset of them, the biologist seeks an anomaly detection algorithm to automatically identify (unseen) hybrid cases from future image collections of Species A.
