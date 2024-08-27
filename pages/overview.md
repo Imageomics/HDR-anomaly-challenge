@@ -5,14 +5,14 @@
 ## Introduction 
 
 ### Butterfly hybrids
-It is known that a butterfly species may develop into multiple subspecies according to the habitat regions. The visual appearances (e.g., color patterns on the wings) of these subspecies can be drastically different.
+Populations of butterfly species that become separated in some way, such as geographic or habitat separation, can develop into different subspecies. The visual appearances (e.g., color patterns on the wings) of these subspecies can be drastically different.
 
-Normally, the same subspecies mate and produce children. Occasionally, different subspecies would mate and produce children that are considered **hybrids**, whose visual appearances are partially similar to each of their parents.
+Normally, only individuals of the same subspecies mate and produce offspring. Occasionally, where the ranges of subspecies come into contact or overlap, individuals from different subspecies can mate, and produce offspring considered **hybrids**. The visual appearances of hybrids are _partially_ similar to _each_ of their parents.
 
-In this challenge, children produced by the same-subspecies parents (i.e., **non-hybrids**) are treated as **normal** cases because they are much more frequently observed. In contrast, **hybrids** are treated as **anomaly** cases, not only because they are much less frequently observed--with some combinations not yet observed--but also because their visual appearances are much more variant and hardly predictive.
+In this challenge, offspring produced by the same-subspecies parents (i.e., **non-hybrids**) are treated as **normal** cases because they are far more frequently observed. In contrast, **hybrids** are treated as **anomaly** cases, not only because they are much less frequently observed--with some combinations not yet observed--but also because their visual appearances are much more variant and hardly predictive.
 
 ### Butterfly mimicry
-On a different dimension, two different butterfly species with overlapping habitats may visually mimic each other. Such mimicry could help avoid shared predators, especially if one (or both) species is toxic or not palatable.
+On a different dimension, two different butterfly species with overlapping geographic ranges may visually mimic each other. Such mimicry could help avoid shared predators, especially if one (or both) species is toxic or not palatable.
 
 Besides the goal to develop an anomaly detection algorithm to distinguish between hybrids and non-hybrids for one species, this challenge aims to investigate whether such an algorithm is generalizable to the other visually mimicking species. 
 

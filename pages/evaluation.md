@@ -4,14 +4,14 @@ This challenge is an anomaly detection problem. The goal is to find hybrid butte
 ## The First Component of the Test Dataset
 This test data set comprises:
 - An image collection of butterfly **Species A subspecies**. These are non-hybrid instances.
-- An image collection of **Species A hybrids**, reproduced by parents from different Species A subspecies. We note that in the training data, we only provide one type of hybrid (the "signal" hybrid), reproduced by one specific combination of parents. In the test data, there are "non-signal" hybrids produced by other combinations of parents as well. 
+- An image collection of **Species A hybrids**, which are from parents from different subspecies of Species A. Note that in the training data, we only provide one type of hybrid (the "signal" hybrid), from one specific combination of parents. In the test data, there are also "non-signal" hybrids, which are from other combinations of parents. 
 
 The goal of the challenge is to distinguish between non-hybrid instances and hybrid instances.
 
 ## The Second Component of the Test Dataset
-Moreover, Species A has a mimic Species B. These two butterfly species have quite similar appearances to evade predators. Specifically, for the two subspecies of Species A that produce the signal hybrid, there are mimic subspecies of Species B which also hybridize. We thus provide a separate, second test data set that contains:
+Moreover, Species A has a [mimic](https://en.wikipedia.org/wiki/M%C3%BCllerian_mimicry) Species B. These two butterfly species have quite similar appearances to evade predators. Specifically, for the two subspecies of Species A that produce the signal hybrid, there are mimic subspecies of Species B which also hybridize. We thus provide a separate, second test data set that contains:
 - An image collection of butterfly **Species B subspecies**. These are non-hybrid instances.
-- An image collection of **Species B hybrids**, reproduced by parents from different Species B subspecies. 
+- An image collection of **Species B hybrids**, which are from parents from different subspecies of Species B. 
 
 Specifically, we only consider one particular hybrid and two specific parent subspecies of Species B, corresponding to Species A signal hybrid and its two parent subspecies. 
 
@@ -21,9 +21,9 @@ This second test set aims to investigate whether an anomaly detection algorithm 
 There are 2 phases. Each test data set is split into a development set and a final test set.  
 1. **Development phase:**
 	* The provided training data contains:
-		- Images of all Species A subspecies: these images are considered normal (not anomaly) cases.
-		- A signal set comprising the signal, most common hybrid: these images are considered anomaly cases.*
-	* The goal is to develop an algorithm to detect hybrid instances.
+		- Images of all Species A subspecies: these images are considered "normal" (not anomaly) cases.
+		- A signal set comprising the most common hybrid: these images are considered anomaly cases.*
+	* The goal is to develop an algorithm to detect hybrid instances (the anomaly cases).
 	* Upload your model: feedback will be provided on the development set until the end of the challenge:
 		1. Detect signal and non-signal hybrid subspecies of Species A. 
 		2. Detect signal hybrid subspecies of the mimic Species B.
