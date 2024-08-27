@@ -12,7 +12,7 @@ Normally, only individuals of the same subspecies mate and produce offspring. Oc
 In this challenge, offspring produced by the same-subspecies parents (i.e., **non-hybrids**) are treated as **normal** cases because they are far more frequently observed. In contrast, **hybrids** are treated as **anomaly** cases, not only because they are much less frequently observed--with some combinations not yet observed--but also because their visual appearances are much more variant and hardly predictive.
 
 ### Butterfly mimicry
-On a different dimension, two different butterfly species with overlapping geographic ranges may visually mimic each other. Such mimicry could help avoid shared predators, especially if one (or both) species is toxic or not palatable.
+On a different dimension, two different butterfly species with overlapping geographic ranges may visually mimic each other. Such [mimicry](https://en.wikipedia.org/wiki/M%C3%BCllerian_mimicry) could help avoid shared predators, especially if one (or both) species is toxic or not palatable.
 
 Besides the goal to develop an anomaly detection algorithm to distinguish between hybrids and non-hybrids for one species, this challenge aims to investigate whether such an algorithm is generalizable to the other visually mimicking species. 
 
