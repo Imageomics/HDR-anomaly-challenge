@@ -6,7 +6,7 @@ This test data set comprises:
 - An image collection of butterfly **Species A subspecies**. These are non-hybrid instances.
 - An image collection of **Species A hybrids**, which are from parents from different subspecies of Species A. Note that in the training data, we only provide one type of hybrid (the "signal" hybrid), from one specific combination of parents. In the test data, there are also "non-signal" hybrids, which are from other combinations of parents. 
 
-The goal of the challenge is to distinguish between non-hybrid instances and hybrid instances.
+The goal of the challenge is to elicit new ways of solving this problem through designing a model to distinguish between non-hybrid instances and hybrid instances.
 
 ## The Second Component of the Test Dataset
 Moreover, Species A has a [mimic](https://en.wikipedia.org/wiki/M%C3%BCllerian_mimicry) Species B. These two butterfly species have quite similar appearances to evade predators. Specifically, for the two subspecies of Species A that produce the signal hybrid, there are mimic subspecies of Species B which also hybridize. We thus provide a separate, second test data set that contains:
