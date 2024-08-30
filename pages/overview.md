@@ -20,7 +20,7 @@ Besides the goal to develop an anomaly detection algorithm to distinguish betwee
 
 
 ## Setup Overview
-This challenge is designed to simulate a real-world biological scenario. Suppose a biologist studies a particular butterfly Species A. One day, the biologist finds that a subset of the images collected looks slightly abnormal in their visual appearance. After investigation, the biologist finds that these abnormal samples are hybrids produced by different subspecies of Species A, which are rarely observed. Since in theory, there are quadratically many possibilities of hybrids and the current collection only covers a small subset of them, the biologist seeks an anomaly detection algorithm to automatically identify (unseen) hybrid cases from future image collections of Species A.
+This challenge is designed to simulate a real-world biological scenario. Suppose a biologist studies a particular butterfly Species A with many subspecies. One day, the biologist finds that a subset of the images collected looks slightly abnormal in their visual appearance. The biologist does not recognize the pattern as belonging to any of the subspecies on which their research is focused. After investigation, the biologist finds that these unusual samples are hybrids produced by different subspecies of Species A. Realizing that they may encounter other hybrids in future collections of images, the biologist seeks an anomaly detection algorithm to automatically identify (unseen) hybrid cases.
 
 ### Algorithm requirement
 The developed anomaly detection algorithm needs to output an anomaly score (a real number) for each test image. The higher the score is, the more likely the image is an anomaly (i.e., hybrid).
