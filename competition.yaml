@@ -8,7 +8,7 @@ title: Butterfly Hybrid Detection
 description: This challenge is to detect hybrids among two species of butterflies and their subspecies.
 image: Imageomics_logo_butterfly.png
 registration_auto_approve: True  # do not require approval from admin to join the comp
-docker_image: 'icreateadockerid/anomaly_challenge:cpu' # This needs updating (must have pillow, pandas, and tqdm)
+docker_image: 'ghcr.io/a3d3-institute/hdr-image:latest' # This needs updating (must have pillow, pandas, and tqdm)
 
 # Documentation web pages
 terms: pages/terms.md
@@ -24,7 +24,7 @@ pages:
   - title: Starting Kit and Sample Submission
     file: pages/starting_kit.md
 
-# Definition of the tasks: Species A dev + final and Mimic dev + final
+# Definition of the tasks: Species A and Mimic dev + final
 tasks:
 - index: 0
   name: Development Task
@@ -54,9 +54,9 @@ phases:
   name: Development
   description: 'Development phase: create models and submit results on validation
     and/or test data for hybrid detection; feedback provided on the validation set only.'
-  start: 6-22-2024 # Month-Day-Year
-  end: 9-11-2024
-  max_submissions_per_day: # limits are extra
+  start: 9-04-2024 # Month-Day-Year
+  end: 1-17-2025
+  max_submissions_per_day: 1
   max_submissions: 
   execution_time_limit: 
   tasks:
@@ -67,8 +67,8 @@ phases:
   description: 'Final phase: submissions from the previous phase are automatically
     cloned and used to compute the final score. The results on the test set will be
     revealed when the organizers make them available.'
-  start: 9-12-2024 # just last day?
-  end: 9-12-2024
+  start: 1-18-2025
+  end: 1-18-2025
   max_submissions_per_day: 0
   max_submissions: 1
   execution_time_limit: 
@@ -84,7 +84,7 @@ leaderboards:
   key: detection-results
   submission_rule: "Add_And_Delete"
   columns:
-  - title: Challenge Score  # Removed Duration
+  - title: Challenge Score
     key: challenge_score
     index: 0
     sorting: desc
