@@ -15,7 +15,7 @@ Moreover, Species A has a [mimic](https://en.wikipedia.org/wiki/M%C3%BCllerian_m
 
 Specifically, we only consider one particular hybrid and two specific parent subspecies of Species B, corresponding to Species A signal hybrid and its two parent subspecies. 
 
-This second test set aims to investigate whether an anomaly detection algorithm for butterfly Species A is transferrable to the mimic butterfly Species B.
+This second test set aims to investigate whether the submitted anomaly detection algorithm for butterfly Species A is transferrable to the mimic butterfly Species B.
 
 ## Evaluation Phases
 There are 2 phases. Each test data set is split into a development set and a final test set.  
@@ -24,9 +24,9 @@ There are 2 phases. Each test data set is split into a development set and a fin
 		- Images of all Species A subspecies: these images are considered "normal" (not anomaly) cases.
 		- A signal set comprising the most common hybrid: these images are considered anomaly cases.*
 	* The goal is to develop an algorithm to detect hybrid instances (the anomaly cases).
-	* Upload your model: feedback will be provided on the development set until the end of the challenge:
+	* Upload your model: feedback will be provided on the development set until the end of the challenge; one submission is allowed per day.
 		1. Detect signal and non-signal hybrid subspecies of Species A. 
-		2. Detect signal hybrid subspecies of the mimic Species B.
+		2. Detect subspecies hybrids among the mimic Species B (Species B subspecies are mimics of the Species A signal hybrid parent subspecies).
 	* Participants may submit _one_ score on the development sets to be displayed on the leaderboard. This score can be removed and replaced with a newer or better score as they choose.
 2. **Final phase:**
 	* This phase will start automatically at the end of the challenge.

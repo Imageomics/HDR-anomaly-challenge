@@ -1,6 +1,6 @@
 # Butterfly Hybrid Detection: Data
 
-This challenge uses data compiled from various Zenodo records of the Butterfly Genetics Group.
+This challenge uses data compiled from various [Zenodo records of the Butterfly Genetics Group at University of Cambridge](https://zenodo.org/communities/butterfly/records?q=&f=subject%3ACambridge&l=list&p=1&s=10&sort=newest). All data is licensed under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/); see [butterfly_anomaly.bib](https://github.com/Imageomics/HDR-anomaly-challenge/blob/main/butterfly_anomaly.bib) for full citations.
 
 ## Instructions to Download Training Data
 
