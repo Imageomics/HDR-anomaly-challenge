@@ -35,7 +35,7 @@ We consider two sets of images in the test set:
 
 ## Timeline
 
-This ML Challenge starts on September [start day], 2024, and will run through [end date]. Be sure to resubmit your preferred model from the development phase by [date, time]; it will then be run on the final test sets. Only one submission will be run against the test sets to determine your final score in the challenge.
+This ML Challenge starts on September 11th, 2024, and will run through January 17th, 2025. Be sure to resubmit your preferred model from the development phase by January 17th at 11:59pm [AOE](https://www.timeanddate.com/time/zones/aoe); it will then be run on the final test sets. Only one submission will be run against the test sets to determine your final score in the challenge.
 
 
 \*  Note that these hybrids are just the most common within this particular dataset, not necessarily in general.
