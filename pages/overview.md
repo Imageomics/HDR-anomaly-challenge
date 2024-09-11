@@ -40,5 +40,5 @@ This ML Challenge starts on September 11th, 2024, and will run through January 1
 
 \*  Note that these hybrids are just the most common within this particular dataset, not necessarily in general.
 
-**References and credits:** Zenodo citations.<br />
-This challenge was generated using the [CodaBench Iris Sample Bundle](https://github.com/codalab/competition-examples/tree/master/codabench/iris/bundle).
+**References and credits:** [Zenodo citations](https://github.com/Imageomics/HDR-anomaly-challenge/blob/main/butterfly_anomaly.bib).<br />
+This challenge was generated based on the [CodaBench Iris Sample Bundle](https://github.com/codalab/competition-examples/tree/master/codabench/iris/bundle); full formatting and challenge design process can be found in the [challenge repo on GitHub](https://github.com/Imageomics/HDR-anomaly-challenge).
