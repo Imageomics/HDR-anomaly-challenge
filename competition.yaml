@@ -1,0 +1,128 @@
+# The Yaml file contains the main parameters describing the challenge.
+# You can learn more about the possible settings here: # More options here: https://github.com/codalab/codabench/wiki/Yaml-Structure
+# Modified from sample competition file downloaded from https://github.com/codalab/competition-examples/tree/master/codabench/iris 
+
+# Main settings
+version: 2 # this means that it is a Codabench bundle
+title: Butterfly Hybrid Detection
+description: This challenge is to detect hybrids among two species of butterflies and their subspecies.
+image: Imageomics_logo_butterfly.png
+registration_auto_approve: True  # do not require approval from admin to join the comp
+docker_image: 'ghcr.io/a3d3-institute/hdr-image:latest' # This needs updating (must have pillow, pandas, and tqdm)
+
+# Documentation web pages
+terms: pages/terms.md
+pages:
+  - title: Overview
+    file: pages/overview.md
+  - title: Data
+    file: pages/data.md
+  - title: Evaluation
+    file: pages/evaluation.md
+  - title: Terms
+    file: pages/terms.md
+  - title: Starting Kit and Sample Submission
+    file: pages/starting_kit.md
+
+# Definition of the tasks: Species A and Mimic dev + final
+tasks:
+- index: 0
+  name: Development Task
+  description: 'Development phase: create models and submit results on validation
+    and/or test data for Species A & Mimic hybrid detection; feedback provided on the validation set only.'
+  is_public: false
+  input_data: input_data/val.zip
+  reference_data: reference_data/ref_val.csv
+  scoring_program: scoring_program  # Only required part along with name and description
+  ingestion_program: ingestion_program
+- index: 1
+  name: Final Task
+  description: 'Final phase: submissions from the previous phase are automatically
+    cloned and used to compute the final score on Species A & Mimic hybrid detection. 
+    The results on the test set will be revealed when the organizers make them available.'
+  is_public: false
+  input_data: input_data/test.zip
+  reference_data: reference_data/ref_test.csv
+  scoring_program: scoring_program
+  ingestion_program: ingestion_program
+solutions: []
+
+# There are 2 phases: development phase and final phase
+# Each one is linked to the associated Species A and Mimic tasks
+phases:
+- index: 0
+  name: Development
+  description: 'Development phase: create models and submit results on validation
+    and/or test data for hybrid detection; feedback provided on the validation set only.'
+  start: 9-04-2024 # Month-Day-Year
+  end: 1-17-2025
+  max_submissions_per_day: 1
+  max_submissions: 
+  execution_time_limit: 
+  tasks:
+  - 0
+  solutions: []
+- index: 1
+  name: Final
+  description: 'Final phase: submissions from the previous phase are automatically
+    cloned and used to compute the final score. The results on the test set will be
+    revealed when the organizers make them available.'
+  start: 1-18-2025
+  end: 1-18-2025
+  max_submissions_per_day: 0
+  max_submissions: 1
+  execution_time_limit: 
+  tasks:
+  - 1
+  solutions: []
+
+# Leaderboard
+# Submission Rule: participants choose which submission is used, but they can only have one submission at any given time.
+leaderboards:
+- index: 0
+  title: Detection Rate
+  key: detection-results
+  submission_rule: "Add_And_Delete"
+  columns:
+  - title: Challenge Score
+    key: challenge_score
+    index: 0
+    sorting: desc
+    computation: null   # calculating harmonic mean of recall vals in the scoring program
+    computation_indexes: null 
+  - title: Signal Hybrid Recall
+    key: A_score_major_recall
+    index: 1
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: Non-Signal Hybrid Recall
+    key: A_score_minor_recall
+    index: 2
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: PRC AUC Species A Signal Hybrids
+    key: A_PRC_AUC_major
+    index: 3
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: PRC AUC Species A Non-Signal Hybrids
+    key: A_PRC_AUC_minor
+    index: 4
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: Mimic Hybrid Recall
+    key: mimic_recall
+    index: 5
+    sorting: desc
+    computation: null
+    computation_indexes: null
+  - title: PRC AUC Mimic Hybrids
+    key: mimic_PRC_AUC
+    index: 6
+    sorting: desc
+    computation: null
+    computation_indexes: null
