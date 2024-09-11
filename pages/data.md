@@ -8,7 +8,7 @@ First, install the downloader in your virtual environment:
 ```bash
 pip install git+https://github.com/Imageomics/cautious-robot
 ```
-Then download `butterfly_anomaly_train.csv` from the "Files" tab and run: 
+Then download [`butterfly_anomaly_train.csv`](https://github.com/Imageomics/HDR-anomaly-challenge/blob/main/files/butterfly_anomaly_train.csv) and run: 
 ```bash
 cautious-robot -i <path/to/butterfly_anomaly_train.csv> -o <path/to/images> -s hybrid_stat -n CAMID -v md5
 ```
@@ -24,7 +24,7 @@ Add downsample flag with desired size if you want to also get the images downsiz
 
 Following the above steps, participants will obtain two training image subfolders, one for **hybrid** and one for **non-hybrid**. 
 
-The `butterfly_anomaly_train.csv` offers additional biologically meaningful information for each image, which may be useful for developing the anomaly (i.e., hybrid) detection algorithm.
+The [`butterfly_anomaly_train.csv`](https://github.com/Imageomics/HDR-anomaly-challenge/blob/main/files/butterfly_anomaly_train.csv) offers additional biologically meaningful information for each image, which may be useful for developing the anomaly (i.e., hybrid) detection algorithm.
 
 - Column **subspecies**: the subspecies of each **non-hybrid** image. For images in the **hybrid** subfolder, this information is empty.
 - Columns **parent_subspecies_1** and **parent_subspecies_2**: the parent subspecies of each **hybrid** image. For images in the **non-hybrid** subfolder, this information is empty.
