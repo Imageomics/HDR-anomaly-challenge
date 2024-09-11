@@ -1,5 +1,5 @@
 # HDR-anomaly-challenge
-Repository for Imageomics' CodaBench challenge as part of the broader HDR Anomaly ML Challenge.
+Repository for [Imageomics' CodaBench challenge](https://www.codabench.org/competitions/3764/) as part of the broader [HDR Anomaly ML Challenge](https://www.nsfhdr.org/mlchallenge).
 
 Our challenge is an exploration of hybrid detection among two mimetic species of butterflies. The training data provides images from one species (`Species A`), with a collection of `Signal hybrids` (hybrids of the two subspecies that have the greatest presence in our data--this larger presence is due to collection bias). There are then two subtasks on which the models submitted by participants are judged. In both instances, the model must detect the hybrids, but there is a more fine-grained analysis of the results:
 1. For Species A images, the models are graded individually on their identification of Signal and non-Signal hybrids. All non-Signal hybrid parents are also seen in the training set, but the non-Signal hybrids themselves are unseen.
@@ -27,6 +27,7 @@ Imageomics_logo_butterfly.png
 ingestion_program/
     ingestion.py
     metadata.yaml
+    whitelist.txt
 input_data/
     # Images used for testing submitted models (images must be zipped together directly under input_data, not within a subfolder)
     `val.zip`
@@ -43,8 +44,6 @@ reference_data/
     `ref_val.csv`
     `ref_test.csv`
 scoring_program/
-    helper_scripts/
-        dataio.py
     metadata.yaml
     score_combined.py
 ```
