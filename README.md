@@ -1,10 +1,14 @@
-# HDR-anomaly-challenge
+# Harnessing the Data Revolution (HDR) Anomaly ML Challenge
 Repository for [Imageomics' CodaBench challenge](https://www.codabench.org/competitions/3764/) as part of the broader [HDR Anomaly ML Challenge](https://www.nsfhdr.org/mlchallenge).
 
-Our challenge is an exploration of hybrid detection among two mimetic species of butterflies. The training data provides images from one species (`Species A`), with a collection of `Signal hybrids` (hybrids of the two subspecies that have the greatest presence in our data--this larger presence is due to collection bias). There are then two subtasks on which the models submitted by participants are judged. In both instances, the model must detect the hybrids, but there is a more fine-grained analysis of the results:
+Our challenge is an exploration of hybrid detection among two mimetic species of butterflies. The [training data](files/butterfly_anomaly_train.csv) provides images from one species (`Species A`), with a collection of `Signal hybrids` (hybrids of the two subspecies that have the greatest presence in our data--this larger presence is due to collection bias). There are then two subtasks on which the models submitted by participants are judged. In both instances, the model must detect the hybrids, but there is a more fine-grained analysis of the results:
 1. For Species A images, the models are graded individually on their identification of Signal and non-Signal hybrids. All non-Signal hybrid parents are also seen in the training set, but the non-Signal hybrids themselves are unseen.
 2. For the mimetic species, the models are graded on their ability to detect hybrids of the mimics of the two subspecies that birth the Signal hybrids.
 
+
+We use the same base container as the challenges from the three other HDR Institutes; it is available on the [A3D3 Anomaly Challenge GitHub](https://github.com/a3d3-institute/HDRchallenge/pkgs/container/hdr-image). There are options to use packages not included in this container as long as they are in the approved [whitelist](ingestion_program/whitelist.txt); if your solution requires a package not listed in the whitelist, please open an [issue](https://github.com/Imageomics/HDR-anomaly-challenge/issues) to request it (provided it is not already requested by someone else).
+
+For more details on participating in the challenge, please see the pages in the [CodaBench challenge](https://www.codabench.org/competitions/3764/) itself.
 
 ## Full Bundle Structure
 
@@ -23,6 +27,8 @@ baselines/
         model.py
         requirements.txt
 competition.yaml
+files/
+    butterfly_anomaly_train.csv
 Imageomics_logo_butterfly.png
 ingestion_program/
     ingestion.py
