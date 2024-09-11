@@ -8,6 +8,7 @@ import sys
 import json
 import numpy as np
 import pandas as pd
+from datetime import datetime, timezone
 from statistics import harmonic_mean
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score, roc_auc_score, accuracy_score
 
@@ -128,6 +129,13 @@ def save_scores(path, A_scores, mimic_scores):
         f.write(json.dumps(score_record))
 
 if __name__ == "__main__":
+
+    print("We're running scoring")
+
+    # Get the current UTC time
+    current_time_utc = datetime.now(timezone.utc)
+    # Print the timestamp in UTC
+    print("Current UTC Time:", current_time_utc.strftime('%Y-%m-%d %H:%M:%S'))
     
     # Directory to read labels from
     input_dir = sys.argv[1]

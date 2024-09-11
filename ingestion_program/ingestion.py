@@ -30,16 +30,12 @@ import re
 from sys import argv, path, executable, exit
 import subprocess
 import time
+from datetime import datetime, timezone
+from packaging.version import Version, InvalidVersion
 
 
-# expected version pattern for requirements
-VERSION_PATTERN = re.compile("^[N!]N(.N)*[{a|b|rc}N][.postN][.devN]$")
-
-
-
-def install_from_whitelist(req_file):
-
-    whitelist = open("/app/program/whitelist.txt", 'r').readlines()
+def install_from_whitelist(req_file, program_dir):
+    whitelist = open(os.path.join(program_dir,"whitelist.txt"), 'r').readlines()
     whitelist = [i.rstrip('\n') for i in whitelist]
     # print(whitelist)
 
@@ -51,11 +47,14 @@ def install_from_whitelist(req_file):
             print(f"requested package {package} has invalid format, will install latest version (of {package_version[0]}) if allowed")
             package = package_version[0]
         elif len(package_version) == 2:
-            version = package_version[1]
-            if not VERSION_PATTERN.match(version):
-                # invalid format of version, don't use
-                print(f"requested package {package} has invalid version, will install latest version (of {package_version[0]}) if allowed")
-                package = package_version[0]
+            version_str = package_version[1]
+            try:
+                 Version(version_str)
+            except InvalidVersion:
+                 exit(f"requested package {package} has invalid version, please check that {version_str} is the correct version of {package_version[0]}.")
+            #     package = package_version[0]
+
+                
         #print("accepted package name: ", package)
         #print("package name ", package_version[0])
         if package_version[0] in whitelist:
@@ -67,9 +66,15 @@ def install_from_whitelist(req_file):
 
 
 if __name__ == "__main__":
-    #### INPUT/OUTPUT: Get input and output directory names
+    
     print("We're running ingestion")
 
+    # Get the current UTC time
+    current_time_utc = datetime.now(timezone.utc)
+    # Print the timestamp in UTC
+    print("Current UTC Time:", current_time_utc.strftime('%Y-%m-%d %H:%M:%S'))
+
+    #### INPUT/OUTPUT: Get input and output directory names
     input_dir = os.path.abspath(argv[1])
     output_dir = os.path.abspath(argv[2])
     program_dir = os.path.abspath(argv[3])
@@ -79,14 +84,14 @@ if __name__ == "__main__":
     print("Using output_dir: " + output_dir)
     print("Using program_dir: " + program_dir)
     print("Using submission_dir: " + submission_dir)
-        
+
     path.append(program_dir) # In order to access libraries from our own code
     path.append(submission_dir) # In order to access libraries of the user
 
     start = time.time()
     requirements_file = os.path.join(submission_dir, "requirements.txt")
     if os.path.isfile(requirements_file):
-        install_from_whitelist(requirements_file)
+        install_from_whitelist(requirements_file, program_dir)
     end = time.time()
 
     elapsed = time.strftime("%H:%M:%S", time.gmtime(end - start))
@@ -103,6 +108,8 @@ if __name__ == "__main__":
     submit_model = Model()
     submit_model.load()
 
+    if hasattr(submit_model, "device"):
+        print(f"model running on device: {submit_model.device}")
 
     img_list = os.listdir(input_dir)
     num_of_datapoint = len(img_list)
