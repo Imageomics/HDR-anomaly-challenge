@@ -2,7 +2,7 @@
 
 Submissions must be made before the end of phase 1. You may make 1 submission every day of the challenge; the last submission will be used to determine the winner.
 
-This challenge is governed by the [Terms and Conditions on the HDR ML Challenge site](https://www.nsfhdr.org/mlchallenge).
+This challenge is governed by the [HDR ML Challenge Terms and Conditions](https://www.nsfhdr.org/mlchallenge).
 
 
 
