@@ -10,10 +10,10 @@ pip install git+https://github.com/Imageomics/cautious-robot
 ```
 Then download [`butterfly_anomaly_train.csv`](https://github.com/Imageomics/HDR-anomaly-challenge/blob/main/files/butterfly_anomaly_train.csv) and run: 
 ```bash
-cautious-robot -i <path/to/butterfly_anomaly_train.csv> -o <path/to/images> -s hybrid_stat -n CAMID -v md5
+cautious-robot -i <path/to/butterfly_anomaly_train.csv> -o <path/to/images> -s hybrid_stat -v md5
 ```
 
-This will create subfolders `hybrid` and `non-hybrid` with images named by the `CAMID` column. Remove the `-s hybrid_stat` if you want a flat directory.
+This will create subfolders `hybrid` and `non-hybrid` with images named by the `filename` column (`<CAMID>.jpg`). Remove the `-s hybrid_stat` if you want a flat directory.
 
 Add downsample flag with desired size if you want to also get the images downsized for training (e.g., `-l 224` for 224 x 224 images). This creates a directory `path/to/images_downsized` with the downsized images in the same folder structure as the originals.
 
