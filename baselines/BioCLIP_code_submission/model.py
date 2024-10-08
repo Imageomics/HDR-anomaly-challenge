@@ -4,8 +4,7 @@ The ingestion program will call `predict` to get a prediction for each test imag
 - predict: uses the model to perform predictions.
 - load: reloads the model.
 '''
-from open_clip import create_model
-from torchvision import transforms
+from open_clip import create_model_and_transforms
 import torch
 import pickle
 import os
@@ -18,19 +17,13 @@ class Model:
     def load(self):
         self.device='cuda' if torch.cuda.is_available() else 'cpu'
 
-        model = create_model("hf-hub:imageomics/bioclip", output_dict=True, require_pretrained=True)
+        model, _, preprocess_val = create_model_and_transforms("hf-hub:imageomics/bioclip", precision="amp", output_dict=True)
+        model.eval()
         self.model = model.to(self.device)
+        self.preprocess_img = preprocess_val
                 
         with open(os.path.join(os.path.dirname(__file__), "clf.pkl"), "rb") as f:
             self.clf = pickle.load(f)
-
-        self.preprocess_img = transforms.Compose(
-            [
-                transforms.ToTensor(),
-                transforms.Resize((224, 224), interpolation=transforms.InterpolationMode.BICUBIC),
-            ]
-        )
-    
 
     def predict(self, datapoint):
         
