@@ -1,5 +1,6 @@
 sample_result_submission/
 input_data/
+reference_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

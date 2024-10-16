@@ -2,11 +2,18 @@
 : <<'END_COMMENT'
 1. 
 1.a. If run in docker:
-docker pull icreateadockerid/anomaly_challenge
-docker run -it -v [repo path]:/codabench icreateadockerid/anomaly_challenge:cpu /bin/bash
+
+docker pull [image_id]
+
+1.a.1. If use a GPU:
+docker run -it --gpus device=0 -v [repo path]:/codabench [image_id] /bin/bash
+1.a.2. If only use CPU:
+docker run -it -v [repo path]:/codabench [image_id] /bin/bash
+
 cd codabench
 
 1.b. If run with conda env:
+
 1.b.1. create running env with conda, venv, etc.
 conda create --name [name] python=3.10
 conda activate [name]
@@ -14,15 +21,17 @@ conda activate [name]
 pip install pillow==10.3.0 tqdm==4.66.4 pandas==2.2.2 scikit-learn==1.4.2
 
 2. edit and run the script
+
 chmod +x run.sh
+
 ./run.sh
 END_COMMENT
 
 
 export task_type="folder; predict; evaluate" #folder; predict; evaluate
-export data_split="test"
+export data_split="dev"
 export baseline_model="bioclip"
-export task_folder="$data_split_$baseline_model"
+export task_folder="${data_split}_${baseline_model}"
 
 
 ## create folder structure
@@ -57,12 +66,12 @@ if [[ "$task_type" == *"predict"* ]]; then
         exit 1
     fi
     
-    python ingestion_program/ingestion.py $input_dir $output_dir $program_dir $submission_dir
+    python3 ingestion_program/ingestion.py $input_dir $output_dir $program_dir $submission_dir
 fi
 
 ## score the predictions
 if [[ "$task_type" == *"evaluate"* ]]; then
     export input_dir="sample_result_submission/$task_folder"
     export output_dir="sample_result_submission/$task_folder"
-    python scoring_program/score_combined.py $input_dir $output_dir
+    python3 scoring_program/score_combined.py $input_dir $output_dir
 fi
