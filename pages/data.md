@@ -34,4 +34,4 @@ It is worth noting that in the **hybrid** subfolder, only the signal hybrid from
 
 ## Submission Samples
 
-Participants can download sample submissions with the baseline algorithms (`DinoV2` and `BioCLIP` based) from the "Files" tab.
+Participants can download sample submissions with the baseline algorithms (`DinoV2` and `BioCLIP` based) from the [sample repo](https://github.com/Imageomics/HDR-anomaly-challenge-sample), which also contains a sample notebook to load the data and train these models on a subset of it.
