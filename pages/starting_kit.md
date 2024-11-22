@@ -13,6 +13,6 @@ See the provided [baselines](https://github.com/Imageomics/HDR-anomaly-challenge
 
 [!!] Do not zip the whole folder. ONLY select the `model.py` and relevant weight and requirements files to make the tarball.
 
-![common_error: no module named model](https://github.com/user-attachments/assets/10b49a84-d42a-42c2-8855-e4b563b28b15)
+<img src="https://github.com/user-attachments/assets/10b49a84-d42a-42c2-8855-e4b563b28b15" alt="common_error: no module named model" width="750">
 
 The above error is mostly likely caused by zipping the whole folder (instead of zipping just the contents) when making the tarball.
