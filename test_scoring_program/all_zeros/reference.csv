@@ -1,0 +1,11 @@
+filename,hybrid_stat,ssp_indicator
+file1,0,major
+file2,0,major
+file3,1,major
+file4,1,major
+file5,0,minor
+file6,1,minor
+file7,0,mimic
+file8,0,mimic
+file9,1,mimic
+file10,1,mimic
