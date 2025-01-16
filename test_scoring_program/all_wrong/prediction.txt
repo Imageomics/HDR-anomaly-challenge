@@ -1,0 +1,10 @@
+file1,1
+file2,1
+file3,0
+file4,0
+file5,1
+file6,0
+file7,1
+file8,1
+file9,0
+file10,0

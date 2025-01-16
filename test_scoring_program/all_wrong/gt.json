@@ -1,0 +1,28 @@
+{
+    "mimic_scores": {
+        "threshold_recall": 1.0,
+        "threshold_pred": 1.0,
+        "hybrid_recall": 0.0,
+        "hybrid_precision": 0.0,
+        "f1_score": 0.0,
+        "accuracy": 0.5,
+        "prc_auc": 0.5,
+        "roc_auc": 0.0
+    },
+    "A_scores": {
+        "threshold_recall": 1.0,
+        "threshold_pred": 1.0,
+        "hybrid_recall": 0.0,
+        "hybrid_precision": 0.0,
+        "f1_score": 0.0,
+        "accuracy": 0.5,
+        "prc_auc": 0.5,
+        "roc_auc": 0.0,
+        "major_recall": 0.0,
+        "minor_recall": 0.0,
+        "major_prc_auc": 0.5,
+        "minor_prc_auc": 0.5,
+        "major_roc_auc": 0.0,
+        "minor_roc_auc": 0.0
+    }
+}
