@@ -63,3 +63,7 @@ scoring_program/
   - Any requirements used by participants must be on the approved whitelist (or participants must reach out to request their addition) for security purposes.
 - Scores must be saved to a `score.json` file where the keys detailed in the `Leaderboard` section of the `competition.yaml` are give as the keys for the scores.
 - This full collection of files and folders is zipped as-is to upload the bundle to CodaBench.
+- `run.sh` is a bash script to simulate the process on the Leaderboard for testing on your local. You can first build the docker container, and then run the bash within the virtual environment. The script will
+  -  Create a folder `/ref` for the csv ground truth file and a folder `/res` for the generated prediction txt file.
+  -  Run `ingestion_program/ingestion.py` to get the predictions from your model and output the predictions to the txt file.
+  -  Run `scoring_program/score_combined.py` to evaluate the predictions by comparing to the grouth truth. The final scores are then written to a json file.
