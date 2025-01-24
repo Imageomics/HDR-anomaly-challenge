@@ -6,9 +6,9 @@
 docker pull [image_id]
 
 1.a.1. If use a GPU:
-docker run -it --gpus device=0 -v [repo path]:/codabench [image_id] /bin/bash
+docker run -it --gpus device=0 -v [repo_path]:/codabench [image_id] /bin/bash
 1.a.2. If only use CPU:
-docker run -it -v [repo path]:/codabench [image_id] /bin/bash
+docker run -it -v [repo_path]:/codabench [image_id] /bin/bash
 
 cd codabench
 
@@ -34,12 +34,12 @@ export baseline_model="bioclip"
 export task_folder="${data_split}_${baseline_model}"
 
 
-## create folder structure
+# Create folder structure
 if [[ "$task_type" == *"folder"* ]]; then
     mkdir -p sample_result_submission/$task_folder/ref
     mkdir -p sample_result_submission/$task_folder/res
-    export ref_path="/home/wu.5686/imageo/challenge/reference_data/ref_$data_split.csv"
-    cp $ref_path sample_result_submission/$task_folder/ref
+    export ref_path="[the path of folder you put the simulated ground truth csv file]/ref_$data_split.csv"
+    cp $ref_path sample_result_submission/$task_folder/ref # Put the simulated ground truth csv file in the ref folder.
 fi
 
 : <<'END_COMMENT'
@@ -51,11 +51,10 @@ sample_result_submission
 -- res
 END_COMMENT
 
-## get the predictions
+# Get the predictions
 if [[ "$task_type" == *"predict"* ]]; then
-    export input_dir="input_data/$data_split"
-    # export input_dir="/local/scratch/wu.5686/anomaly_challenge/input_data/$data_split"
-    export output_dir="sample_result_submission/$task_folder/res"
+    export input_dir="input_data/$data_split" # This is the directory you put the images in.
+    export output_dir="sample_result_submission/$task_folder/res" # The prediction file will output to this directory.
     export program_dir="ingestion_program"
     if [ "$baseline_model" == "bioclip" ]; then
         export submission_dir="baselines/BioCLIP_code_submission"
@@ -69,7 +68,7 @@ if [[ "$task_type" == *"predict"* ]]; then
     python3 ingestion_program/ingestion.py $input_dir $output_dir $program_dir $submission_dir
 fi
 
-## score the predictions
+# Score the predictions
 if [[ "$task_type" == *"evaluate"* ]]; then
     export input_dir="sample_result_submission/$task_folder"
     export output_dir="sample_result_submission/$task_folder"
