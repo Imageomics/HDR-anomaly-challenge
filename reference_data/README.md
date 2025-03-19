@@ -1,7 +1,9 @@
-This folder should have the following data
- - `valid_A`: Validation set for Species A hybrid detection.
- - `test_A`: Test set for Species A hybrid detection.
- - `valid_mimic`: Validation set for Mimic hybrid detection.
- - `test_mimic`: Test set for Mimic hybrid detection.
+This folder contains the following data which was kept secret for the duration of the challenge
+ - `ref_val.csv`: Validation set used during the Development Phase. It includes both Species A & B, as well as subspecies hybrids of both, beyond just the Signal Hybrids.
+ - `ref_test.csv`: Test set used for final evaluation of submissions. It includes both Species A & B, as well as subspecies hybrids of both, beyond just the Signal Hybrids.
 
-I think this would just be the labels if we're looking at assessing their predictions. May be labels regardless: in the [Iris example](https://github.com/codalab/competition-examples/tree/master/codabench/iris/bundle/reference_data), this is the set of labels in folders "valid" and "test", while the [`input_data` folder](https://github.com/codalab/competition-examples/tree/master/codabench/iris/bundle/input_data) has the unlabeled data for each of validation and testing, as well as training data and training data labels.
+> [!NOTE]  
+> - Both of these CSVs contain a `split` column with both `test` and `test-2`; this was an artifact of our original pre-competition setup that distinguished multiple tests within each phase (one for Species A hybrid detection and one for Species B hybrid detection). 
+> - Actual subspecies epithets are provided in `subspecies_ref`, those with `ssp_indicator` mimic are _Heliconius melpomene_ and the rest are _Heliconius erato_.
+> - `X` is a unique identifier for all the images used in this challenge, as is `CAMID`.
+> - Images may be downloaded following the [training data download instructions](../pages/data.md#instructions-to-download-training-data).
