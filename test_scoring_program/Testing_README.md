@@ -1,4 +1,4 @@
-# Requirements
+# Testing the Scoring Program
 1. create running env with conda
 
 `conda create --name [name] python=3.10`
