@@ -10,6 +10,14 @@ conda activate score-test
 
 2. install all necessary dependencies
 
-`pip install pillow==10.3.0 tqdm==4.66.4 pandas==2.2.2 scikit-learn==1.4.2`
+```bash
+pip install pillow==10.3.0 tqdm==4.66.4 pandas==2.2.2 scikit-learn==1.4.2 ipykernel
+```
 
-3. Run the [testing notebook](https://github.com/Imageomics/HDR-anomaly-challenge/blob/test_scoring/test_scoring_program/validate.ipynb)
+3. Add environment to Jupyter Notebook
+
+```bash
+python -m ipykernel install --user --name score-test
+```
+
+4. Run the [testing notebook](https://github.com/Imageomics/HDR-anomaly-challenge/blob/test_scoring/test_scoring_program/validate.ipynb)
