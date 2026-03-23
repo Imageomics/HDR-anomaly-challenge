@@ -8,7 +8,7 @@ conda activate score-test
 ```
 
 
-2. install all necessary dependencies
+2. Install all necessary dependencies
 
 ```bash
 pip install pillow==10.3.0 tqdm==4.66.4 pandas==2.2.2 scikit-learn==1.4.2 ipykernel
