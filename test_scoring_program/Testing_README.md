@@ -1,9 +1,12 @@
 # Testing the Scoring Program
-1. create running env with conda
+1. Create a conda environment for testing
 
-`conda create --name [name] python=3.10`
+```bash
+conda create --name score-test python=3.10
 
-`conda activate [name]`
+conda activate score-test
+```
+
 
 2. install all necessary dependencies
 
