@@ -1,4 +1,4 @@
-abstract: "Repository for Imageomics' Butterfly Hybrid Detection Codabench challenge as part of the broader 2024 HDR Anomaly ML Challenge. It provides all the code, data access instructions, and documentation used in the Codabench challenge for processing and scoring, as well as the evaluation labels."
+abstract: "Repository for the Imageomics Institute's Butterfly Hybrid Detection Codabench challenge as part of the broader 2024 HDR Anomaly ML Challenge. It provides all the code, data access instructions, and documentation used in the Codabench challenge for processing and scoring, as well as the evaluation labels."
 authors:
 - family-names: Campolongo
   given-names: "Elizabeth G."
