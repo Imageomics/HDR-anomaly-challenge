@@ -1,0 +1,52 @@
+abstract: "Repository for Imageomics' Butterfly Hybrid Detection Codabench challenge as part of the broader 2024 HDR Anomaly ML Challenge. It provides all the code, data access instructions, and documentation used in the Codabench challenge for processing and scoring, as well as the evaluation labels."
+authors:
+- family-names: Campolongo
+  given-names: "Elizabeth G."
+  orcid: "https://orcid.org/0000-0003-0846-2413"
+  affiliation: "The Ohio State University"
+- family-names: Wu
+  given-names: Jiaman
+  affiliation: "The Ohio State University"
+- family-names: "Lapp"
+  given-names: "Hilmar"
+  orcid: "https://orcid.org/0000-0001-9107-0714"
+  affiliation: "Duke University"
+- family-names: Carlyn
+  given-names: "David E."
+  orcid: "https://orcid.org/0000-0002-8323-0359"
+  affiliation: "The Ohio State University"
+- family-names: Lawrence
+  given-names: "Christopher"
+  orcid: "https://orcid.org/0009-0005-1570-5892"
+  affiliation: "Princeton University"
+- family-names: Zhang
+  given-names: Ziheng
+  affiliation: "The Ohio State University"
+- family-names: Chao
+  given-names: "Wei-Lun"
+  orcid: "https://orcid.org/0000-0003-1269-7231"
+  affiliation: "The Ohio State University"
+cff-version: 1.2.0
+date-released: "2026-03-25"
+identifiers:
+  - description: "The GitHub release URL of tag v1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/HDR-anomaly-challenge/releases/tag/v1.0.0"
+  - description: "The GitHub URL of the commit tagged with v1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/HDR-anomaly-challenge/tree/<commit-hash>" # update on release
+keywords:
+  - imageomics
+  - HDR
+  - "anomaly detection"
+  - "hybrid detection"
+  - "ML challenge"
+  - "butterflies"
+  - codabench
+license:
+message: "If you find this software helpful in your research, please cite both the software and our paper."
+repository-code: "https://github.com/Imageomics/HDR-anomaly-challenge"
+title: "Imageomics HDR Anomaly Challenge Sample"
+version: 1.0.0
+doi: <DOI from Zenodo>    # version agnostic DOI
+type: software
