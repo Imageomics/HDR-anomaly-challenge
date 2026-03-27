@@ -48,7 +48,7 @@ keywords:
 license:
 message: "If you find this software helpful in your research, please cite both the software and our paper."
 repository-code: "https://github.com/Imageomics/HDR-anomaly-challenge"
-title: "Imageomics HDR Anomaly Challenge Sample"
+title: "Imageomics HDR Anomaly Challenge"
 version: 1.0.0
 doi: "10.5281/zenodo.19258140"
 type: software
