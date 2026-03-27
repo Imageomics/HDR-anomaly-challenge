@@ -1,4 +1,5 @@
-# Harnessing the Data Revolution (HDR) Anomaly ML Challenge
+# Harnessing the Data Revolution (HDR) Anomaly ML Challenge [![DOI](https://zenodo.org/badge/795549595.svg)](https://doi.org/10.5281/zenodo.19258140)
+
 Repository for the [Imageomics Institute's CodaBench challenge](https://www.codabench.org/competitions/3764/) as part of the broader 2024 [HDR Anomaly ML Challenge](https://www.nsfhdr.org/mlchallenge). This ML challenge ended on January 31, 2025; winners are listed on [the Anomaly Challenge leaderboard](https://www.nsfhdr.org/html/mlchallenge-y1/leaderboard.html).
 
 Our challenge is on the problem of hybrid detection among two mimetic species of butterflies. The [training data](files/butterfly_anomaly_train.csv) provides images from one species (`Species A`), with a collection of `Signal hybrids` (hybrids of the two subspecies that have the greatest presence in our data--this larger presence is due to collection bias). There are then two subtasks on which the models submitted by participants are evaluated. In both instances, the model must detect the hybrids, but there is a more fine-grained analysis of the results:
