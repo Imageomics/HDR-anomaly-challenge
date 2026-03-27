@@ -36,7 +36,7 @@ identifiers:
     value: "https://github.com/Imageomics/HDR-anomaly-challenge/releases/tag/v1.0.0"
   - description: "The GitHub URL of the commit tagged with v1.0.0."
     type: url
-    value: "https://github.com/Imageomics/HDR-anomaly-challenge/tree/<commit-hash>" # update on release
+    value: "https://github.com/Imageomics/HDR-anomaly-challenge/tree/ab897d23bec53272771aef1e18b708a3caee9440"
 keywords:
   - imageomics
   - HDR
@@ -50,5 +50,5 @@ message: "If you find this software helpful in your research, please cite both t
 repository-code: "https://github.com/Imageomics/HDR-anomaly-challenge"
 title: "Imageomics HDR Anomaly Challenge Sample"
 version: 1.0.0
-doi: <DOI from Zenodo>    # version agnostic DOI
+doi: "10.5281/zenodo.19258140"
 type: software
