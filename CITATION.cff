@@ -29,7 +29,7 @@ authors:
   orcid: "https://orcid.org/0000-0003-1269-7231"
   affiliation: "The Ohio State University"
 cff-version: 1.2.0
-date-released: "2026-03-26"
+date-released: "2026-03-27"
 identifiers:
   - description: "The GitHub release URL of tag v1.0.0."
     type: url
